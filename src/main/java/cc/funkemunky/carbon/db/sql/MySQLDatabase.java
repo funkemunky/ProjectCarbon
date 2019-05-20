@@ -33,12 +33,12 @@ public class MySQLDatabase extends Database {
 
     @Override
     public void loadDatabase() {
-
+        //TODO Load
     }
 
     @Override
     public void saveDatabase() {
-
+        //TODO save.
     }
 
     @Override

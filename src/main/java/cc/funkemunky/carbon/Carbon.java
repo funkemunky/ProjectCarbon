@@ -28,6 +28,12 @@ public class Carbon {
         databases.put(name, database);
     }
 
+    public void createFlatfileDatabase(String directory, String name) {
+        Database database = new FlatfileDatabase(directory, name);
+
+        databases.put(name, database);
+    }
+
     public void createMongoDatabase(String name, Mongo mongo) {
         Database database = new MongoDatabase(name, mongo);
 
