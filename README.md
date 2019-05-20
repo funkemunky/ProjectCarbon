@@ -1,4 +1,4 @@
-# ProjectCarbon    <img align="right" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png">
+# ProjectCarbon    <a href="https://creativecommons.org/licenses/by-sa/4.0/"><img align="right" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"></a>
 ProjectCarbon is an API designed to combine as many database formats as possible into one API for Java, allowing for conversions, less learning curves, and efficent development.
 
 ### What is ProjectCarbon?
