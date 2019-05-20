@@ -119,4 +119,8 @@ public class Zenbans {
 
 
 
+This project is distributed under a <a href="https://creativecommons.org/licenses/by-sa/4.0/"> Creative Commons License</a> ("License"), and by using, viewing, or downloading this software, you agree to said License.
+
+
+
 
