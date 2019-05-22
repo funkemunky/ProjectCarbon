@@ -1,6 +1,24 @@
 # ProjectCarbon    <a href="https://creativecommons.org/licenses/by-sa/4.0/"><img align="right" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"></a>
 ProjectCarbon is an API designed to combine as many database formats as possible into one API for Java, allowing for conversions, less learning curves, and efficent development.
 
+### Maven
+```
+<repositories>
+        <repository>
+            <id>funkemunky-repo</id>
+            <url>http://funkemunky.cc:8080/nexus/content/repositories/releases/</url>
+        </repository>
+</repositories>
+
+<dependencies>
+        <dependency>
+            <groupId>cc.funkemunky.utils</groupId>
+            <artifactId>ProjectCarbon</artifactId>
+            <version>1.0</version>
+        </dependency>
+</dependencies>
+```
+
 ### What is ProjectCarbon?
 This project is an API meant to simplify communicating with the many different database software solutions that are used everywhere. It allows for higher efficiency in development, decreased troubleshooting, and no room for accidental security loopholes caused by human error. Everything is done for developers.
 
