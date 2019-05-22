@@ -33,52 +33,56 @@ public class MySQLDatabase extends Database {
 
     @Override
     public void loadDatabase() {
-        //TODO Load
-    }
-
-    @Override
-    public void saveDatabase() {
-        //TODO save.
-    }
-
-    @Override
-    public void inputField(String string, Object object) {
         try {
             connectIfDisconected();
-            PreparedStatement statement2 = connection.prepareStatement("delete ignore from data where keyVal='" + string + "'");
-            statement2.executeUpdate();
-            statement2.close();
-            PreparedStatement statement = connection.prepareStatement("insert into data (keyVal, value)\nVALUES ('" + string + "', '" + object.getClass().getName() + "-" + object.toString() + "');");
+            PreparedStatement statement = connection.prepareStatement("select * from data");
+            ResultSet set = statement.executeQuery();
 
-            statement.executeUpdate();
-            statement.close();
+            while(set.next()) {
+                val key = set.getString("keyVal");
+                val value = set.getString("value");
 
-            getDatabaseValues().put(string, object);
+                String[] splitValue = value.split("-");
+
+                Class<?> className = Class.forName(splitValue[0]);
+
+                getDatabaseValues().put(key, MiscUtils.parseObjectFromString(splitValue[1], className));
+            }
         } catch(Exception e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public Object getField(String key) {
+    public void saveDatabase() {
         try {
             connectIfDisconected();
-            PreparedStatement statement = connection.prepareStatement("select value from data where keyVal='" + key + "';");
 
-            ResultSet set = statement.executeQuery();
+            PreparedStatement statement2 = connection.prepareStatement("delete ignore from data");
+            statement2.executeUpdate();
 
-            if(set.next()) {
-                String value = set.getString("value");
+            for (String key : getDatabaseValues().keySet()) {
+                Object object = getDatabaseValues().get(key);
 
-                String[] splitValue = value.split("-");
+                statement2.close();
+                PreparedStatement statement = connection.prepareStatement("insert into data (keyVal, value)\nVALUES ('" + key + "', '" + object.getClass().getName() + "-" + object.toString() + "');");
 
-                Class<?> className = Class.forName(splitValue[0]);
-                return MiscUtils.parseObjectFromString(splitValue[1], className);
+                statement.executeUpdate();
+                statement.close();
             }
         } catch(Exception e) {
-            e.printStackTrace();;
+            e.printStackTrace();
         }
-        return getDatabaseValues().get(key);
+    }
+
+    @Override
+    public void inputField(String key, Object object) {
+        getDatabaseValues().put(key, object);
+    }
+
+    @Override
+    public Object getField(String key) {
+        return getDatabaseValues().getOrDefault(key, null);
     }
 
     private void connectIfDisconected() {
