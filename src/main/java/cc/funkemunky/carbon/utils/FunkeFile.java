@@ -10,9 +10,9 @@ public class FunkeFile {
     private String name;
 
     public FunkeFile(String Path, String Name) {
-        this.file = new File(File.separator + Path);
+        this.file = new File(Path);
         this.file.mkdirs();
-        this.file = new File(File.separator + Path, Name);
+        this.file = new File(Path, Name);
         if(!file.exists()) {
             try {
                 this.file.createNewFile();
