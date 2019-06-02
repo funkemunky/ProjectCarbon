@@ -85,6 +85,11 @@ public class MySQLDatabase extends Database {
         return getDatabaseValues().getOrDefault(key, null);
     }
 
+    @Override
+    public Object getFieldOrDefault(String key, Object object) {
+        return getDatabaseValues().getOrDefault(key, object);
+    }
+
     private void connectIfDisconected() {
         try {
             if(connection == null || connection.isClosed()) {

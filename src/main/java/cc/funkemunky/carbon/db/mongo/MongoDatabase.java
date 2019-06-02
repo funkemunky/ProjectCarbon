@@ -67,6 +67,11 @@ public class MongoDatabase extends Database {
 
     @Override
     public Object getField(String key) {
-        return getDatabaseValues().get(key);
+        return getDatabaseValues().getOrDefault(key, null);
+    }
+
+    @Override
+    public Object getFieldOrDefault(String key, Object object) {
+        return getDatabaseValues().getOrDefault(key, object);
     }
 }

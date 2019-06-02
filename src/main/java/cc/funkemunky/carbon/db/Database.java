@@ -27,4 +27,6 @@ public abstract class Database {
     public abstract void inputField(String string, Object object);
 
     public abstract Object getField(String key);
+
+    public abstract Object getFieldOrDefault(String key, Object object);
 }
