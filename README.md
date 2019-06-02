@@ -14,7 +14,7 @@ ProjectCarbon is an API designed to combine as many database formats as possible
         <dependency>
             <groupId>cc.funkemunky.utils</groupId>
             <artifactId>ProjectCarbon</artifactId>
-            <version>1.0</version>
+            <version>1.1.1</version>
         </dependency>
 </dependencies>
 ```
