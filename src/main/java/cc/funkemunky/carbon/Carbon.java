@@ -46,8 +46,8 @@ public class Carbon {
         databases.put(name, database);
     }
 
-    public void createSQLDatabase(String name, String ip, String username, String password, int port) {
-        Database database = new MySQLDatabase(name, ip, username, password, port);
+    public void createSQLDatabase(String name, String ip, String username, String password, String databaseName, int port) {
+        Database database = new MySQLDatabase(name, ip, username, password, databaseName, port);
 
         databases.put(name, database);
     }

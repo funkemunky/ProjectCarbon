@@ -20,14 +20,14 @@ public class MySQLDatabase extends Database {
         connectIfDisconected();
     }
 
-    public MySQLDatabase(String name, String ip, String username, String password, int port) {
+    public MySQLDatabase(String name, String ip, String username, String password, String database, int port) {
         super(name, DatabaseType.SQL);
 
         this.ip = ip;
         this.username = username;
         this.password = password;
         this.port = port;
-        database = name;
+        this.database = database;
         connectIfDisconected();
     }
 
@@ -100,7 +100,7 @@ public class MySQLDatabase extends Database {
 
                     int Result = s.executeUpdate("CREATE DATABASE IF NOT EXISTS " + database + ";");
                     int Result3 = s3.executeUpdate("USE " + database + ";");
-                    int Result2 = s2.executeUpdate("CREATE TABLE IF NOT EXISTS data (keyVal VARCHAR(64), value VARCHAR(128));");
+                    int Result2 = s2.executeUpdate("CREATE TABLE IF NOT EXISTS " + getName() +  " (keyVal VARCHAR(64), value VARCHAR(128));");
 
                 } catch (Exception e) {
                     e.printStackTrace();
