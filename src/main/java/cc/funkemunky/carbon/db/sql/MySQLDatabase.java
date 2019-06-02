@@ -35,7 +35,7 @@ public class MySQLDatabase extends Database {
     public void loadDatabase() {
         try {
             connectIfDisconected();
-            PreparedStatement statement = connection.prepareStatement("select * from data");
+            PreparedStatement statement = connection.prepareStatement("select * from " + getName());
             ResultSet set = statement.executeQuery();
 
             while(set.next()) {
@@ -58,14 +58,15 @@ public class MySQLDatabase extends Database {
         try {
             connectIfDisconected();
 
-            PreparedStatement statement2 = connection.prepareStatement("delete ignore from data");
+            PreparedStatement statement2 = connection.prepareStatement("delete ignore from " + getName());
             statement2.executeUpdate();
 
             for (String key : getDatabaseValues().keySet()) {
                 Object object = getDatabaseValues().get(key);
 
                 statement2.close();
-                PreparedStatement statement = connection.prepareStatement("insert into data (keyVal, value)\nVALUES ('" + key + "', '" + object.getClass().getName() + "-" + object.toString() + "');");
+                PreparedStatement statement = connection.prepareStatement("insert into " + getName() + " (keyVal, value)\nVALUES ('" + key + "', '" + object.getClass().getName() + "-" + object.toString() + "');");
+
 
                 statement.executeUpdate();
                 statement.close();
