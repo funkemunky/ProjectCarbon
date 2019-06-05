@@ -3,11 +3,13 @@ package cc.funkemunky.carbon.db.sql;
 import cc.funkemunky.carbon.db.Database;;
 import cc.funkemunky.carbon.db.DatabaseType;
 import cc.funkemunky.carbon.utils.MiscUtils;
+import lombok.Getter;
 import lombok.val;
 
 import java.sql.*;
 
 public class MySQLDatabase extends Database {
+    @Getter
     private Connection connection;
 
     private String ip = "localhost", username = "root", password = "password", database;
@@ -101,7 +103,7 @@ public class MySQLDatabase extends Database {
 
                     int Result = s.executeUpdate("CREATE DATABASE IF NOT EXISTS " + database + ";");
                     int Result3 = s3.executeUpdate("USE " + database + ";");
-                    int Result2 = s2.executeUpdate("CREATE TABLE IF NOT EXISTS " + getName() +  " (keyVal VARCHAR(64), value VARCHAR(128));");
+                    int Result2 = s2.executeUpdate("CREATE TABLE IF NOT EXISTS " + getName() +  " (keyVal VARCHAR(64), value VARCHAR(512));");
 
                 } catch (Exception e) {
                     e.printStackTrace();
