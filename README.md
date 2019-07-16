@@ -6,7 +6,7 @@ ProjectCarbon is an API designed to combine as many database formats as possible
 <repositories>
         <repository>
             <id>funkemunky-repo</id>
-            <url>http://funkemunky.cc:8080/nexus/content/repositories/releases/</url>
+            <url>http://nexus.funkemunky.cc/content/repositories/releases/</url>
         </repository>
 </repositories>
 
