@@ -26,15 +26,22 @@ public class FlatfileDatabase extends Database {
     @Override
     public void loadDatabase() {
         file.readFile();
-        file.getLines().forEach(line -> {
+        file.getLines().parallelStream().forEach(line -> {
             String[] info = line.split(":");
 
             if(info.length >= 3) {
-                String key = info[0], valueString = info[2];
+                String key = info[0];
+                StringBuilder valueString = new StringBuilder();
+
+                for (int i = 2; i < info.length; i++) {
+                    valueString.append(info[i]).append(":");
+                }
+
+                valueString.deleteCharAt(valueString.length() - 1);
 
                 try {
                     Class<?> classObject = Class.forName(info[1]);
-                    Object value = classObject.getSimpleName().equals("String") ? info[2] : MiscUtils.parseObjectFromString(valueString, classObject);
+                    Object value = classObject.getSimpleName().equals("String") ? valueString.toString() : MiscUtils.parseObjectFromString(valueString.toString(), classObject);
                     getDatabaseValues().put(key, value);
                 } catch(Exception e) {
                     System.out.println("Error parsing " + key + " value from string!");
