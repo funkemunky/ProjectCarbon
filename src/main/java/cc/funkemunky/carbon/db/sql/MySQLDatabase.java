@@ -44,7 +44,7 @@ public class MySQLDatabase extends Database {
                 val key = set.getString("keyVal");
                 val value = set.getString("value");
 
-                String[] splitValue = value.split("-");
+                String[] splitValue = value.split(":@@@:");
 
                 Class<?> className = Class.forName(splitValue[0]);
 
@@ -67,7 +67,7 @@ public class MySQLDatabase extends Database {
                 Object object = getDatabaseValues().get(key);
 
                 statement2.close();
-                PreparedStatement statement = connection.prepareStatement("insert into " + getName() + " (keyVal, value)\nVALUES ('" + key + "', '" + object.getClass().getName() + "-" + object.toString() + "');");
+                PreparedStatement statement = connection.prepareStatement("insert into " + getName() + " (keyVal, value)\nVALUES ('" + key + "', '" + object.getClass().getName() + ":@@@:" + object.toString() + "');");
 
 
                 statement.executeUpdate();
@@ -103,7 +103,7 @@ public class MySQLDatabase extends Database {
 
                     int Result = s.executeUpdate("CREATE DATABASE IF NOT EXISTS " + database + ";");
                     int Result3 = s3.executeUpdate("USE " + database + ";");
-                    int Result2 = s2.executeUpdate("CREATE TABLE IF NOT EXISTS " + getName() +  " (keyVal VARCHAR(64), value VARCHAR(512));");
+                    int Result2 = s2.executeUpdate("CREATE TABLE IF NOT EXISTS " + getName() +  " (keyVal VARCHAR(256), value VARCHAR(512));");
 
                 } catch (Exception e) {
                     e.printStackTrace();

@@ -27,7 +27,7 @@ public class FlatfileDatabase extends Database {
     public void loadDatabase() {
         file.readFile();
         file.getLines().parallelStream().forEach(line -> {
-            String[] info = line.split(":");
+            String[] info = line.split(":@@@:");
 
             if(info.length >= 3) {
                 String key = info[0];
@@ -56,7 +56,7 @@ public class FlatfileDatabase extends Database {
         getDatabaseValues().keySet().forEach(key -> {
             Object value = getDatabaseValues().get(key);
 
-            file.addLine(key + ":" + value.getClass().getName() + ":" + value.toString());
+            file.addLine(key + ":@@@:" + value.getClass().getName() + ":@@@:" + value.toString());
         });
         file.write();
     }
