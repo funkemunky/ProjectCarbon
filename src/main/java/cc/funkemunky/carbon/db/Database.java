@@ -3,6 +3,7 @@ package cc.funkemunky.carbon.db;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -11,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class Database {
     private String name;
     private DatabaseType type;
-    private Map<String, Object> databaseValues;
+    private Map<String, List<String>> databaseValues;
 
     public Database(String name, DatabaseType type) {
         this.name = name;
@@ -24,9 +25,9 @@ public abstract class Database {
 
     public abstract void saveDatabase();
 
-    public abstract void inputField(String string, Object object);
+    public abstract void inputField(String key, Object... object);
 
     public abstract Object getField(String key);
 
-    public abstract Object getFieldOrDefault(String key, Object object);
+    public abstract Object getFieldOrDefault(String key, Object... object);
 }

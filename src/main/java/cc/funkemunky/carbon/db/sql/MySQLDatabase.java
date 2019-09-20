@@ -6,7 +6,12 @@ import cc.funkemunky.carbon.utils.MiscUtils;
 import lombok.Getter;
 import lombok.val;
 
+import java.io.IOException;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 public class MySQLDatabase extends Database {
     @Getter
@@ -77,8 +82,20 @@ public class MySQLDatabase extends Database {
     }
 
     @Override
-    public void inputField(String key, Object object) {
-        getDatabaseValues().put(key, object);
+    public void inputField(String key, Object... objects) {
+        List<String> stringObjects = getDatabaseValues().getOrDefault(key, new ArrayList<>());
+        try {
+            for (Object object : objects) {
+                byte[] array = MiscUtils.getBytesOfObject(object);
+
+                String stringBytes = MiscUtils.bytesToString(array);
+                stringObjects.add(stringBytes);
+            }
+
+            getDatabaseValues().put(key, stringObjects);
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -87,8 +104,8 @@ public class MySQLDatabase extends Database {
     }
 
     @Override
-    public Object getFieldOrDefault(String key, Object object) {
-        return getDatabaseValues().getOrDefault(key, object);
+    public List<Object> getFieldOrDefault(String key, Object... object) {
+
     }
 
     private void connectIfDisconected() {
