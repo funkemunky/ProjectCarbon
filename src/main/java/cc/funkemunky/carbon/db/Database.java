@@ -1,33 +1,92 @@
 package cc.funkemunky.carbon.db;
 
+import cc.funkemunky.carbon.utils.MiscUtils;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
 public abstract class Database {
     private String name;
     private DatabaseType type;
-    private Map<String, List<String>> databaseValues;
+    private List<StructureSet> databaseValues;
 
     public Database(String name, DatabaseType type) {
         this.name = name;
         this.type = type;
 
-        databaseValues = new ConcurrentHashMap<>();
+        databaseValues = new CopyOnWriteArrayList<>();
     }
 
     public abstract void loadDatabase();
 
     public abstract void saveDatabase();
 
-    public abstract void inputField(String key, Object... object);
+    public void inputField(StructureSet sSet) {
+        if (containsStructure(sSet)) {
+            StructureSet set = getStructureSet(sSet.id);
 
-    public abstract Object getField(String key);
+            databaseValues.remove(set);
+        }
+        databaseValues.add(sSet);
+    }
 
-    public abstract Object getFieldOrDefault(String key, Object... object);
+    public boolean containsStructure(StructureSet sSet) {
+        return databaseValues.stream().anyMatch(set -> set.id.equals(sSet.id));
+    }
+
+    public StructureSet getStructureSet(String id) {
+        return databaseValues.stream().filter(set -> set.id.equals(id)).findFirst().orElse(null);
+    }
+
+    public StructureSet createStructureSet(String id, Structure... structures) {
+        return new StructureSet(id, Arrays.asList(structures));
+    }
+
+    public StructureSet createStructureSet(Structure... structures) {
+        return createStructureSet(MiscUtils.randomString(20, false), structures);
+    }
+
+    //Getting a StructureSet (if it exists) by the name of the structure.
+    public Optional<StructureSet> getFieldByStructure(Structure structure) {
+        return databaseValues.stream()
+                .filter(set -> set.structures.stream()
+                        .anyMatch(struct -> struct.name.equals(structure.name)))
+                .findFirst();
+    }
+
+    //People can use this to set their own parameters for how they want to get a StructureSet.
+    public Optional<StructureSet> getFieldByStructure(Predicate<Structure> predicate) {
+        return databaseValues
+                .stream()
+                .filter(set -> set.structures.stream()
+                        .anyMatch(predicate))
+                .findFirst();
+    }
+
+    //Getting multiple StructureSets (if it exists) by the name of the structure.
+    public List<StructureSet> getFieldsByStructure(Structure structure) {
+        return databaseValues.stream()
+                .filter(set -> set.structures.stream()
+                        .anyMatch(struct -> struct.name.equals(structure.name)))
+                .collect(Collectors.toList());
+    }
+
+    public boolean containsStructure(String id) {
+        return databaseValues.stream().anyMatch(set -> set.id.equals(id));
+    }
+
+    //People can use this to set their own parameters for how they want to get multiple StructureSets.
+    public List<StructureSet> getFieldsByStructure(Predicate<Structure> predicate) {
+        return databaseValues.stream()
+                .filter(set -> set.structures.stream().anyMatch(predicate))
+                .collect(Collectors.toList());
+    }
 }

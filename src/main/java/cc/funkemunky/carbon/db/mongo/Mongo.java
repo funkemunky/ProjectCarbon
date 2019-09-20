@@ -28,23 +28,21 @@ public class Mongo {
     }
 
     public void connect() {
-       if(enabled) {
-           try {
-               this.client = new MongoClient(ip, port);
-               if(enabled) {
-                   val credential = MongoCredential.createCredential(username, database, password.toCharArray());
-                   client.getCredentialsList().add(credential);
-               }
-           } catch (Exception e) {
-               e.printStackTrace();
-               System.out.println("Could not connect to the database!");
-               this.connected = false;
-               return;
-           }
-           System.out.println("Connected to Mongo database with IP " + ip + " and name " + database + ".");
-           this.mongoDatabase = client.getDatabase(database);
-           this.connected = true;
-       }
+       try {
+            this.client = new MongoClient(ip, port);
+            if(enabled) {
+                val credential = MongoCredential.createCredential(username, database, password.toCharArray());
+                client.getCredentialsList().add(credential);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Could not connect to the database!");
+            this.connected = false;
+            return;
+        }
+        System.out.println("Connected to Mongo database with IP " + ip + " and name " + database + ".");
+        this.mongoDatabase = client.getDatabase(database);
+        this.connected = true;
     }
 
     public void disconnect() {

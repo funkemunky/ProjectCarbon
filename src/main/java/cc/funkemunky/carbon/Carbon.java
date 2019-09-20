@@ -46,10 +46,10 @@ public class Carbon {
         databases.put(name, database);
     }
 
-    public void createSQLDatabase(String name, String ip, String username, String password, String databaseName, int port) {
-        Database database = new MySQLDatabase(name, ip, username, password, databaseName, port);
+    public void createSQLDatabase(String databaseName, String ip, int port, String username, String password) {
+        Database database = new MySQLDatabase(databaseName, ip, username, password, databaseName, port);
 
-        databases.put(name, database);
+        databases.put(databaseName, database);
     }
 
     public Database getDatabase(String name) {
@@ -60,7 +60,7 @@ public class Carbon {
         return databases.containsKey(name);
     }
 
-    public Mongo initMongo(String ip, int port, String database, String username, String password) {
+    public Mongo initMongo(String database, String ip, int port, String username, String password) {
         return this.mongo = new Mongo(ip, port, database, username, password);
     }
 }

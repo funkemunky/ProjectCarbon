@@ -2,13 +2,20 @@ package cc.funkemunky.carbon.db.flatfile;
 
 import cc.funkemunky.carbon.db.Database;
 import cc.funkemunky.carbon.db.DatabaseType;
+import cc.funkemunky.carbon.db.Structure;
+import cc.funkemunky.carbon.db.StructureSet;
 import cc.funkemunky.carbon.utils.FunkeFile;
 import cc.funkemunky.carbon.utils.MiscUtils;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.IOException;
+
 @Getter
 @Setter
+/* NOTE: Do not use the character sequence of :@@@: when using this database system!!!
+This character string is used to separate different fields and will corrupt data if you use it.
+ */
 public class FlatfileDatabase extends Database {
     private FunkeFile file;
     public FlatfileDatabase(String name) {
@@ -26,53 +33,54 @@ public class FlatfileDatabase extends Database {
     @Override
     public void loadDatabase() {
         file.readFile();
-        file.getLines().parallelStream().forEach(line -> {
-            String[] info = line.split(":@@@:");
+        //Clearing after read file to prevent data loss of cache if error occurs.
+        getDatabaseValues().clear();
+        int lineCount = 0;
+        try {
+            for (String line : file.getLines()) {
+                lineCount++;
+                String[] splitLine = line.split(":@@@:");
 
-            if(info.length >= 3) {
-                String key = info[0];
-                StringBuilder valueString = new StringBuilder();
+                if(splitLine.length != 3) continue;
 
-                for (int i = 2; i < info.length; i++) {
-                    valueString.append(info[i]).append(":");
-                }
+                String id = splitLine[0], name = splitLine[1], objectString = splitLine[2];
 
-                valueString.deleteCharAt(valueString.length() - 1);
+                StructureSet structSet;
 
-                try {
-                    Class<?> classObject = Class.forName(info[1]);
-                    Object value = classObject.getSimpleName().equals("String") ? valueString.toString() : MiscUtils.parseObjectFromString(valueString.toString(), classObject);
-                    getDatabaseValues().put(key, value);
-                } catch(Exception e) {
-                    System.out.println("Error parsing " + key + " value from string!");
-                }
+                if(containsStructure(id)) {
+                    structSet = getStructureSet(id);
+                    getDatabaseValues().remove(structSet);
+                } else structSet = new StructureSet(id);
+
+                byte[] array = MiscUtils.bytesFromString(objectString);
+                Object toInsert = MiscUtils.objectFromBytes(array);
+
+                structSet.addStructure(new Structure(name, toInsert));
+
+                getDatabaseValues().add(structSet);
             }
-        });
+        } catch(IOException | ClassNotFoundException e) {
+            System.out.println("Error on line: " + lineCount);
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void saveDatabase() {
         file.clear();
-        getDatabaseValues().keySet().forEach(key -> {
-            Object value = getDatabaseValues().get(key);
 
-            file.addLine(key + ":@@@:" + value.getClass().getName() + ":@@@:" + value.toString());
-        });
+        //Adding lines.
+        for (StructureSet structSet : getDatabaseValues()) {
+            structSet.structures.forEach(struct -> {
+                try {
+                    String object = MiscUtils.bytesToString(MiscUtils.getBytesOfObject(struct.object));
+                    file.addLine(structSet.id + ":@@@:" + struct.name + ":@@@:" + object);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+
         file.write();
-    }
-
-    @Override
-    public void inputField(String string, Object object) {
-        getDatabaseValues().put(string, object);
-    }
-
-    @Override
-    public Object getField(String key) {
-        return getDatabaseValues().getOrDefault(key, null);
-    }
-
-    @Override
-    public Object getFieldOrDefault(String key, Object object) {
-        return getDatabaseValues().getOrDefault(key, object);
     }
 }

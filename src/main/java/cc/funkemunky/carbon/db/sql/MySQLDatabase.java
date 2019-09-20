@@ -2,6 +2,8 @@ package cc.funkemunky.carbon.db.sql;
 
 import cc.funkemunky.carbon.db.Database;;
 import cc.funkemunky.carbon.db.DatabaseType;
+import cc.funkemunky.carbon.db.Structure;
+import cc.funkemunky.carbon.db.StructureSet;
 import cc.funkemunky.carbon.utils.MiscUtils;
 import lombok.Getter;
 import lombok.val;
@@ -45,15 +47,28 @@ public class MySQLDatabase extends Database {
             PreparedStatement statement = connection.prepareStatement("select * from " + getName());
             ResultSet set = statement.executeQuery();
 
+            //We clear here instead of beginning in case there's something wrong grabbing values. If an error occurs
+            //grabbing everything, it won't clear the values cached in the list without saving, causing data loss.
+            getDatabaseValues().clear();
             while(set.next()) {
-                val key = set.getString("keyVal");
-                val value = set.getString("value");
+                String id = set.getString("id");
+                String name = set.getString("name");
+                String value = set.getString("value");
 
-                String[] splitValue = value.split("-");
+                StructureSet structSet;
 
-                Class<?> className = Class.forName(splitValue[0]);
+                if(containsStructure(id)) {
+                    structSet = getStructureSet(id);
+                    getDatabaseValues().remove(structSet);
+                } else structSet = new StructureSet(id);
 
-                getDatabaseValues().put(key, MiscUtils.parseObjectFromString(splitValue[1], className));
+                Object toInsert;
+
+                byte[] array = MiscUtils.bytesFromString(value);
+                toInsert = MiscUtils.objectFromBytes(array);
+
+                structSet.addStructure(new Structure(name, toInsert));
+                getDatabaseValues().add(structSet);
             }
         } catch(Exception e) {
             e.printStackTrace();
@@ -68,44 +83,19 @@ public class MySQLDatabase extends Database {
             PreparedStatement statement2 = connection.prepareStatement("delete ignore from " + getName());
             statement2.executeUpdate();
             statement2.close();
-            for (String key : getDatabaseValues().keySet()) {
-                Object object = getDatabaseValues().get(key);
-                PreparedStatement statement = connection.prepareStatement("insert into " + getName() + " (keyVal, value)\nVALUES ('" + key + "', '" + object.getClass().getName() + "-" + object.toString() + "');");
+            for (StructureSet structSet : getDatabaseValues()) {
+                //Object object = key.;
+                //PreparedStatement statement = connection.prepareStatement("insert into " + getName() + " (keyVal, value)\nVALUES ('" + key + "', '" + object.getClass().getName() + "-" + object.toString() + "');");
+                for (Structure struct : structSet.structures) {
+                    PreparedStatement statement = connection.prepareStatement("insert into " + getName() + " (id, name, value)\nVALUES ('" + structSet.id + "', '" + struct.name + "', '" + MiscUtils.bytesToString(MiscUtils.getBytesOfObject(struct.object)) + "');");
 
-
-                statement.executeUpdate();
-                statement.close();
+                    statement.executeUpdate();
+                    statement.close();
+                }
             }
         } catch(Exception e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void inputField(String key, Object... objects) {
-        List<String> stringObjects = getDatabaseValues().getOrDefault(key, new ArrayList<>());
-        try {
-            for (Object object : objects) {
-                byte[] array = MiscUtils.getBytesOfObject(object);
-
-                String stringBytes = MiscUtils.bytesToString(array);
-                stringObjects.add(stringBytes);
-            }
-
-            getDatabaseValues().put(key, stringObjects);
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public Object getField(String key) {
-        return getDatabaseValues().getOrDefault(key, null);
-    }
-
-    @Override
-    public List<Object> getFieldOrDefault(String key, Object... object) {
-
     }
 
     private void connectIfDisconected() {
@@ -118,7 +108,7 @@ public class MySQLDatabase extends Database {
 
                     int Result = s.executeUpdate("CREATE DATABASE IF NOT EXISTS " + database + ";");
                     int Result3 = s3.executeUpdate("USE " + database + ";");
-                    int Result2 = s2.executeUpdate("CREATE TABLE IF NOT EXISTS " + getName() +  " (keyVal VARCHAR(64), value VARCHAR(512));");
+                    int Result2 = s2.executeUpdate("CREATE TABLE IF NOT EXISTS " + getName() +  " (id VARCHAR(64), name VARCHAR(64), value VARCHAR(512));");
 
                 } catch (Exception e) {
                     e.printStackTrace();

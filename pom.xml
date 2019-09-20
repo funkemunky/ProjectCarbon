@@ -6,7 +6,7 @@
 
     <groupId>cc.funkemunky.utils</groupId>
     <artifactId>ProjectCarbon</artifactId>
-    <version>1.1.4</version>
+    <version>1.2</version>
 
     <build>
         <defaultGoal>clean package</defaultGoal>
@@ -65,7 +65,7 @@
     <repositories>
         <repository>
             <id>funkemunky-repo</id>
-            <url>http://funkemunky.cc:8080/nexus/content/repositories/releases/</url>
+            <url>http://nexus.funkemunky.cc/content/repositories/releases/</url>
         </repository>
     </repositories>
 
@@ -83,18 +83,11 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>redis.clients</groupId>
-            <artifactId>jedis</artifactId>
-            <version>3.0.1</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>org.github.lombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.0</version>
             <scope>provided</scope>
         </dependency>
-
     </dependencies>
 
 
