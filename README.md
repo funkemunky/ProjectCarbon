@@ -19,6 +19,21 @@ ProjectCarbon is an API designed to combine as many database formats as possible
 </dependencies>
 ```
 
+### Gradle
+```
+repositories {
+    mavenCentral()
+    maven {
+        name = 'funkemunky-repo'
+        url = "http://funkemunky.cc:8080/nexus/content/repositories/releases/"
+    }
+}
+
+dependencies {
+    compile group: 'cc.funkemunky.utils', name: 'ProjectCarbon', version: '1.0'
+}
+```
+
 ### What is ProjectCarbon?
 This project is an API meant to simplify communicating with the many different database software solutions that are used everywhere. It allows for higher efficiency in development, decreased troubleshooting, and no room for accidental security loopholes caused by human error. Everything is done for developers.
 
