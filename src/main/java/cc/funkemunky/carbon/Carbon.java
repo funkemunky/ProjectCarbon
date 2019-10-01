@@ -5,6 +5,7 @@ import cc.funkemunky.carbon.db.flatfile.FlatfileDatabase;
 import cc.funkemunky.carbon.db.mongo.Mongo;
 import cc.funkemunky.carbon.db.mongo.MongoDatabase;
 import cc.funkemunky.carbon.db.sql.MySQLDatabase;
+import cc.funkemunky.carbon.utils.security.hash.Hash;
 import lombok.Getter;
 
 import java.util.Map;
@@ -20,6 +21,7 @@ public class Carbon {
 
     public Carbon() {
         INSTANCE = this;
+        Hash.loadHashes();
     }
 
     public void createFlatfileDatabase(String name) {

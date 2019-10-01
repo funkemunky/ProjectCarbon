@@ -88,6 +88,12 @@
             <version>1.18.0</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>de.mkammerer</groupId>
+            <artifactId>argon2-jvm</artifactId>
+            <version>2.5</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 

@@ -1,12 +1,11 @@
 package cc.funkemunky.carbon.utils;
 
-import sun.rmi.transport.ObjectTable;
+import cc.funkemunky.carbon.utils.security.GeneralUtils;
+import cc.funkemunky.carbon.utils.security.hash.Hash;
+import cc.funkemunky.carbon.utils.security.hash.HashType;
+import cc.funkemunky.carbon.utils.security.hash.impl.SHA1;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class MiscUtils {
@@ -23,14 +22,6 @@ public class MiscUtils {
         return bos.toByteArray();
     }
 
-    public static String bytesToString(byte[] bytes) {
-        return Base64.getEncoder().encodeToString(bytes);
-    }
-
-    public static byte[] bytesFromString(String bytesString) {
-        return Base64.getDecoder().decode(bytesString);
-    }
-
     public static Object objectFromBytes(byte[] byteArray) throws IOException, ClassNotFoundException {
         ByteArrayInputStream ias = new ByteArrayInputStream(byteArray);
         ObjectInputStream ois = new ObjectInputStream(ias);
@@ -45,49 +36,17 @@ public class MiscUtils {
             byte[] bytesOfDouble = getBytesOfObject(val);
 
             if(!fast) {
-                String string = getSHA256String(bytesToString(bytesOfDouble));
+                SHA1 sha1 = Hash.getHashByType(HashType.SHA1);
+                String string = sha1.hash(GeneralUtils.bytesToString(bytesOfDouble));
                 if(string != null) {
                     return string.substring(0, Math.min(count, string.length() - 1));
                 }
             } else {
-                return bytesToHex(bytesOfDouble);
+                return GeneralUtils.bytesToHex(bytesOfDouble);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
-    }
-
-    //Credit: https://www.baeldung.com/sha-256-hashing-java
-    public static byte[] getSHA256(String string) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            return digest.digest(
-                    string.getBytes(StandardCharsets.UTF_8));
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    //Credit: https://www.baeldung.com/sha-256-hashing-java
-    public static String getSHA256String(String string) {
-        byte[] array = getSHA256(string);
-
-        if(array != null) {
-            return bytesToHex(array);
-        }
-        return null;
-    }
-
-    //Credit: https://www.baeldung.com/sha-256-hashing-java
-    public static String bytesToHex(byte[] hash) {
-        StringBuffer hexString = new StringBuffer();
-        for (int i = 0; i < hash.length; i++) {
-            String hex = Integer.toHexString(0xff & hash[i]);
-            if(hex.length() == 1) hexString.append('0');
-            hexString.append(hex);
-        }
-        return hexString.toString();
     }
 }

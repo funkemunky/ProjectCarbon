@@ -1,9 +1,14 @@
 package cc.funkemunky.carbon.db;
 
 import cc.funkemunky.carbon.utils.MiscUtils;
+import cc.funkemunky.carbon.utils.security.GeneralUtils;
+import cc.funkemunky.carbon.utils.security.encryption.AES;
+import cc.funkemunky.carbon.utils.security.hash.Hash;
+import cc.funkemunky.carbon.utils.security.hash.HashType;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
