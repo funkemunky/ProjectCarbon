@@ -4,7 +4,6 @@ import cc.funkemunky.carbon.utils.security.GeneralUtils;
 import cc.funkemunky.carbon.utils.security.hash.Hash;
 import cc.funkemunky.carbon.utils.security.hash.HashType;
 
-import java.awt.*;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

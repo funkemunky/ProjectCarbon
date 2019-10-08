@@ -7,7 +7,6 @@ import cc.funkemunky.carbon.db.StructureSet;
 import cc.funkemunky.carbon.utils.FunkeFile;
 import cc.funkemunky.carbon.utils.MiscUtils;
 import cc.funkemunky.carbon.utils.security.GeneralUtils;
-import com.sun.tools.javah.Gen;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,7 +1,7 @@
 package cc.funkemunky.carbon.db.mongo;
 
-import cc.funkemunky.carbon.db.Database;
 import cc.funkemunky.carbon.Carbon;
+import cc.funkemunky.carbon.db.Database;
 import cc.funkemunky.carbon.db.DatabaseType;
 import cc.funkemunky.carbon.db.Structure;
 import cc.funkemunky.carbon.db.StructureSet;

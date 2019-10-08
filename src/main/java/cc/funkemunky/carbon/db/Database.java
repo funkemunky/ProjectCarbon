@@ -1,14 +1,9 @@
 package cc.funkemunky.carbon.db;
 
 import cc.funkemunky.carbon.utils.MiscUtils;
-import cc.funkemunky.carbon.utils.security.GeneralUtils;
-import cc.funkemunky.carbon.utils.security.encryption.AES;
-import cc.funkemunky.carbon.utils.security.hash.Hash;
-import cc.funkemunky.carbon.utils.security.hash.HashType;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -60,27 +55,28 @@ public abstract class Database {
     }
 
     //Getting a StructureSet (if it exists) by the name of the structure.
-    public Optional<StructureSet> getFieldByStructure(Structure structure) {
-        return databaseValues.stream()
+    public Optional<StructureSet> getFieldByStructure(Structure... structure) {
+        return databaseValues.parallelStream()
                 .filter(set -> set.structures.stream()
-                        .anyMatch(struct -> struct.name.equals(structure.name)))
+                        .anyMatch(struct -> Arrays.stream(structure).anyMatch(arg -> struct.name.equals(arg.name))))
                 .findFirst();
     }
 
     //People can use this to set their own parameters for how they want to get a StructureSet.
-    public Optional<StructureSet> getFieldByStructure(Predicate<Structure> predicate) {
+    public Optional<StructureSet> getFieldByStructure(Predicate<Structure>... predicate) {
         return databaseValues
-                .stream()
-                .filter(set -> set.structures.stream()
-                        .anyMatch(predicate))
+                .parallelStream()
+                .filter(set ->
+                        Arrays.stream(predicate)
+                        .allMatch(arg -> set.structures.stream().anyMatch(arg)))
                 .findFirst();
     }
 
     //Getting multiple StructureSets (if it exists) by the name of the structure.
-    public List<StructureSet> getFieldsByStructure(Structure structure) {
-        return databaseValues.stream()
+    public List<StructureSet> getFieldsByStructure(Structure... structure) {
+        return databaseValues.parallelStream()
                 .filter(set -> set.structures.stream()
-                        .anyMatch(struct -> struct.name.equals(structure.name)))
+                        .anyMatch(struct -> Arrays.stream(structure).anyMatch(arg -> struct.name.equals(arg.name))))
                 .collect(Collectors.toList());
     }
 
@@ -89,9 +85,12 @@ public abstract class Database {
     }
 
     //People can use this to set their own parameters for how they want to get multiple StructureSets.
-    public List<StructureSet> getFieldsByStructure(Predicate<Structure> predicate) {
-        return databaseValues.stream()
-                .filter(set -> set.structures.stream().anyMatch(predicate))
+    public List<StructureSet> getFieldsByStructure(Predicate<Structure>... predicate) {
+        return databaseValues
+                .parallelStream()
+                .filter(set ->
+                        Arrays.stream(predicate)
+                                .allMatch(arg -> set.structures.stream().anyMatch(arg)))
                 .collect(Collectors.toList());
     }
 }

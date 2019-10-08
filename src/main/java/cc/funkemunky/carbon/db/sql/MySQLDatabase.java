@@ -5,6 +5,7 @@ import cc.funkemunky.carbon.db.DatabaseType;
 import cc.funkemunky.carbon.db.Structure;
 import cc.funkemunky.carbon.db.StructureSet;
 import cc.funkemunky.carbon.utils.MiscUtils;
+import cc.funkemunky.carbon.utils.security.GeneralUtils;
 import lombok.Getter;
 import lombok.val;
 
@@ -64,7 +65,7 @@ public class MySQLDatabase extends Database {
 
                 Object toInsert;
 
-                byte[] array = MiscUtils.bytesFromString(value);
+                byte[] array = GeneralUtils.bytesFromString(value);
                 toInsert = MiscUtils.objectFromBytes(array);
 
                 structSet.addStructure(new Structure(name, toInsert));
@@ -87,7 +88,7 @@ public class MySQLDatabase extends Database {
                 //Object object = key.;
                 //PreparedStatement statement = connection.prepareStatement("insert into " + getName() + " (keyVal, value)\nVALUES ('" + key + "', '" + object.getClass().getName() + "-" + object.toString() + "');");
                 for (Structure struct : structSet.structures) {
-                    PreparedStatement statement = connection.prepareStatement("insert into " + getName() + " (id, name, value)\nVALUES ('" + structSet.id + "', '" + struct.name + "', '" + MiscUtils.bytesToString(MiscUtils.getBytesOfObject(struct.object)) + "');");
+                    PreparedStatement statement = connection.prepareStatement("insert into " + getName() + " (id, name, value)\nVALUES ('" + structSet.id + "', '" + struct.name + "', '" + GeneralUtils.bytesToString(MiscUtils.getBytesOfObject(struct.object)) + "');");
 
                     statement.executeUpdate();
                     statement.close();
