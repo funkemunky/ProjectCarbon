@@ -7,14 +7,8 @@ import cc.funkemunky.carbon.db.StructureSet;
 import cc.funkemunky.carbon.utils.MiscUtils;
 import cc.funkemunky.carbon.utils.security.GeneralUtils;
 import lombok.Getter;
-import lombok.val;
 
-import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
 
 public class MySQLDatabase extends Database {
     @Getter
@@ -103,7 +97,7 @@ public class MySQLDatabase extends Database {
         try {
             if(connection == null || connection.isClosed()) {
                 try {
-                    Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+                    Class.forName("com.mysql.jdbc.Driver").newInstance();
                     connection = DriverManager.getConnection("jdbc:mysql://" + ip + ":" + port + "/" + "?characterEncoding=utf8&user=" + username + "&password=" + password);
                     Statement s = connection.createStatement(), s2 = connection.createStatement(), s3 = connection.createStatement();
 

@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Getter
 @Setter
@@ -36,34 +37,36 @@ public class FlatfileDatabase extends Database {
         file.readFile();
         //Clearing after read file to prevent data loss of cache if error occurs.
         getDatabaseValues().clear();
-        int lineCount = 0;
-        try {
-            for (String line : file.getLines()) {
-                lineCount++;
-                String[] splitLine = line.split(":@@@:");
+        AtomicInteger lineCount = new AtomicInteger();
+        file.getLines().stream().forEach(line -> {
+            lineCount.getAndIncrement();
+            String[] splitLine = line.split(":@@@:");
 
-                if(splitLine.length != 3) continue;
+            if(splitLine.length == 3) {
 
                 String id = splitLine[0], name = splitLine[1], objectString = splitLine[2];
 
                 StructureSet structSet;
 
-                if(containsStructure(id)) {
+                if (containsStructure(id)) {
                     structSet = getStructureSet(id);
                     getDatabaseValues().remove(structSet);
                 } else structSet = new StructureSet(id);
 
                 byte[] array = GeneralUtils.bytesFromString(objectString);
-                Object toInsert = MiscUtils.objectFromBytes(array);
+                Object toInsert = null;
+                try {
+                    toInsert = MiscUtils.objectFromBytes(array);
+                } catch (IOException | ClassNotFoundException e) {
+                    System.out.println("Error on line: " + lineCount.get());
+                    e.printStackTrace();
+                }
 
                 structSet.addStructure(new Structure(name, toInsert));
 
                 getDatabaseValues().add(structSet);
-            }
-        } catch(IOException | ClassNotFoundException e) {
-            System.out.println("Error on line: " + lineCount);
-            e.printStackTrace();
-        }
+            } else System.out.println("Line " + lineCount.get() + " is not length of 3.");
+        });
     }
 
     @Override
