@@ -63,12 +63,17 @@ public abstract class Database {
     }
 
     //People can use this to set their own parameters for how they want to get a StructureSet.
-    public Optional<StructureSet> getFieldByStructure(Predicate<Structure>... predicate) {
+    public Optional<StructureSet> getFieldByStructure(PredicateLogic<Structure>... logicArray) {
         return databaseValues
                 .parallelStream()
-                .filter(set ->
-                        Arrays.stream(predicate)
-                        .allMatch(arg -> set.structures.stream().anyMatch(arg)))
+                .filter(set -> set.structures.stream().anyMatch(struct ->
+                        Arrays.stream(logicArray).anyMatch(logic -> {
+                            if(logic.type.equals(PredicateLogic.LogicType.OR)) {
+                                return Arrays.stream(logic.predicates).anyMatch(predicate -> predicate.test(struct));
+                            } else {
+                                return Arrays.stream(logic.predicates).allMatch(predicate -> predicate.test(struct));
+                            }
+                        })))
                 .findFirst();
     }
 
@@ -85,12 +90,17 @@ public abstract class Database {
     }
 
     //People can use this to set their own parameters for how they want to get multiple StructureSets.
-    public List<StructureSet> getFieldsByStructure(Predicate<Structure>... predicate) {
+    public List<StructureSet> getFieldsByStructure(PredicateLogic<Structure>... logicArray) {
         return databaseValues
                 .parallelStream()
-                .filter(set ->
-                        Arrays.stream(predicate)
-                                .allMatch(arg -> set.structures.stream().anyMatch(arg)))
+                .filter(set -> set.structures.stream().anyMatch(struct ->
+                        Arrays.stream(logicArray).anyMatch(logic -> {
+                            if(logic.type.equals(PredicateLogic.LogicType.OR)) {
+                                return Arrays.stream(logic.predicates).anyMatch(predicate -> predicate.test(struct));
+                            } else {
+                                return Arrays.stream(logic.predicates).allMatch(predicate -> predicate.test(struct));
+                            }
+                        })))
                 .collect(Collectors.toList());
     }
 }
