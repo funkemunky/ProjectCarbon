@@ -2,7 +2,6 @@ package cc.funkemunky.carbon.db.flatfile;
 
 import cc.funkemunky.carbon.db.Database;
 import cc.funkemunky.carbon.db.DatabaseType;
-import cc.funkemunky.carbon.db.Structure;
 import cc.funkemunky.carbon.db.StructureSet;
 import cc.funkemunky.carbon.utils.FunkeFile;
 import cc.funkemunky.carbon.utils.MiscUtils;

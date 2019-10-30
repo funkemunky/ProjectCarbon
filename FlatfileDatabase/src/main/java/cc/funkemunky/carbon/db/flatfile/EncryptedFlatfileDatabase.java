@@ -2,13 +2,13 @@ package cc.funkemunky.carbon.db.flatfile;
 
 import cc.funkemunky.carbon.db.DatabaseType;
 import cc.funkemunky.carbon.db.EncryptedDatabase;
-import cc.funkemunky.carbon.db.Structure;
 import cc.funkemunky.carbon.db.StructureSet;
 import cc.funkemunky.carbon.exceptions.InvalidDecryptionKeyException;
 import cc.funkemunky.carbon.utils.FunkeFile;
 import cc.funkemunky.carbon.utils.MiscUtils;
 import cc.funkemunky.carbon.utils.security.GeneralUtils;
 import cc.funkemunky.carbon.utils.security.hash.HashType;
+import com.sun.jna.Structure;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,53 +35,12 @@ public class EncryptedFlatfileDatabase extends EncryptedDatabase {
 
     @Override
     public void loadDatabase() {
-        file.readFile();
-        //Clearing after read file to prevent data loss of cache if error occurs.
-        getDatabaseValues().clear();
-        int lineCount = 0;
-        try {
-            for (String line : file.getLines()) {
-                lineCount++;
-                String[] splitLine = line.split(":@@@:");
 
-                if(splitLine.length != 3) continue;
-
-                String id = splitLine[0], name = splitLine[1], objectString = splitLine[2];
-
-                if(name.equals("decryptKey")) continue;
-
-                StructureSet structSet;
-
-                if(containsStructure(id)) {
-                    structSet = getStructureSet(id, false);
-                    getDatabaseValues().remove(structSet);
-                } else structSet = new StructureSet(id);
-
-                byte[] array = GeneralUtils.bytesFromString(objectString);
-                Object toInsert = MiscUtils.objectFromBytes(array);
-
-                structSet.addStructure(new Structure(name, toInsert));
-
-                getDatabaseValues().add(structSet);
-            }
-        } catch(IOException | ClassNotFoundException e) {
-            System.out.println("Error on line: " + lineCount);
-            e.printStackTrace();
-        }
     }
 
     @Override
     public void saveDatabase() {
-        file.clear();
-        //Adding lines.
-        for (StructureSet structSet : getDatabaseValues()) {
-            for (Structure struct : structSet.structures) {
-                String object = (String) struct.object;
-                file.addLine(structSet.id + ":@@@:" + struct.name + ":@@@:" + object);
-            }
-        }
 
-        file.write();
     }
 
     @Override

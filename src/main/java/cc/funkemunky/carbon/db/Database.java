@@ -1,6 +1,8 @@
 package cc.funkemunky.carbon.db;
 
 import cc.funkemunky.carbon.utils.MiscUtils;
+import cc.funkemunky.carbon.utils.Pair;
+import cc.funkemunky.carbon.utils.json.JSONObject;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,78 +31,49 @@ public abstract class Database {
 
     public abstract void saveDatabase();
 
-    public void inputField(StructureSet sSet) {
-        if (containsStructure(sSet)) {
-            StructureSet set = getStructureSet(sSet.id);
+    public StructureSet createStructure(String name, Pair<String, Object>... pairs) {
+        StructureSet set = new StructureSet(name);
 
-            databaseValues.remove(set);
+        for (Pair<String, Object> pair : pairs) {
+            set.inputField(pair.key, pair.value);
         }
-        databaseValues.add(sSet);
+
+        databaseValues.add(set);
+
+        return set;
     }
 
-    public boolean containsStructure(StructureSet sSet) {
-        return databaseValues.stream().anyMatch(set -> set.id.equals(sSet.id));
+    public StructureSet updateObject(StructureSet set) {
+        if(contains(set.id)) {
+            databaseValues.remove(get(name));
+            databaseValues.add(set);
+        }
+        return set;
     }
 
-    public StructureSet getStructureSet(String id) {
-        return databaseValues.stream().filter(set -> set.id.equals(id)).findFirst().orElse(null);
+    public StructureSet get(String id) {
+        Optional<StructureSet> getSet = databaseValues
+                .stream().filter(set -> set.id.equals(id)).findFirst();
+
+        return null;
     }
 
-    public StructureSet createStructureSet(String id, Structure... structures) {
-        return new StructureSet(id, Arrays.asList(structures));
-    }
-
-    public StructureSet createStructureSet(Structure... structures) {
-        return createStructureSet(MiscUtils.randomString(20, false), structures);
-    }
-
-    //Getting a StructureSet (if it exists) by the name of the structure.
-    public Optional<StructureSet> getFieldByStructure(Structure... structure) {
-        return databaseValues.parallelStream()
-                .filter(set -> set.structures.stream()
-                        .anyMatch(struct -> Arrays.stream(structure).anyMatch(arg -> struct.name.equals(arg.name))))
-                .findFirst();
-    }
-
-    //People can use this to set their own parameters for how they want to get a StructureSet.
-    public Optional<StructureSet> getFieldByStructure(PredicateLogic<Structure>... logicArray) {
+    public boolean contains(String id) {
         return databaseValues
-                .parallelStream()
-                .filter(set -> set.structures.stream().anyMatch(struct ->
-                        Arrays.stream(logicArray).anyMatch(logic -> {
-                            if(logic.type.equals(PredicateLogic.LogicType.OR)) {
-                                return Arrays.stream(logic.predicates).anyMatch(predicate -> predicate.test(struct));
-                            } else {
-                                return Arrays.stream(logic.predicates).allMatch(predicate -> predicate.test(struct));
-                            }
-                        })))
-                .findFirst();
+                .stream().anyMatch(set -> set.id.equals(id));
     }
 
-    //Getting multiple StructureSets (if it exists) by the name of the structure.
-    public List<StructureSet> getFieldsByStructure(Structure... structure) {
-        return databaseValues.parallelStream()
-                .filter(set -> set.structures.stream()
-                        .anyMatch(struct -> Arrays.stream(structure).anyMatch(arg -> struct.name.equals(arg.name))))
+    public boolean remove(String id) {
+        List<StructureSet> sets = databaseValues.stream()
+                .filter(set -> set.id.equals(id))
                 .collect(Collectors.toList());
-    }
 
-    public boolean containsStructure(String id) {
-        return databaseValues.stream().anyMatch(set -> set.id.equals(id));
-    }
-
-    //People can use this to set their own parameters for how they want to get multiple StructureSets.
-    public List<StructureSet> getFieldsByStructure(PredicateLogic<Structure>... logicArray) {
-        return databaseValues
-                .parallelStream()
-                .filter(set -> set.structures.stream().anyMatch(struct ->
-                        Arrays.stream(logicArray).anyMatch(logic -> {
-                            if(logic.type.equals(PredicateLogic.LogicType.OR)) {
-                                return Arrays.stream(logic.predicates).anyMatch(predicate -> predicate.test(struct));
-                            } else {
-                                return Arrays.stream(logic.predicates).allMatch(predicate -> predicate.test(struct));
-                            }
-                        })))
-                .collect(Collectors.toList());
+        if(sets.size() > 0) {
+            for (StructureSet set : sets) {
+                databaseValues.remove(set);
+            }
+            return true;
+        }
+        return false;
     }
 }

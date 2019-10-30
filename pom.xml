@@ -6,6 +6,7 @@
 
     <groupId>cc.funkemunky.utils</groupId>
     <artifactId>ProjectCarbon</artifactId>
+    <packaging>pom</packaging>
     <version>1.2.2</version>
 
     <build>
@@ -61,6 +62,11 @@
             </resource>
         </resources>
     </build>
+    <modules>
+        <module>SQLDatabase</module>
+        <module>FlatfileDatabase</module>
+        <module>MongoDatabase</module>
+    </modules>
 
     <repositories>
         <repository>
@@ -71,15 +77,21 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongo-java-driver</artifactId>
-            <version>3.8.0</version>
+            <groupId>cc.funkemunky</groupId>
+            <artifactId>SQLDatabase</artifactId>
+            <version>1.2.2</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.47</version>
+            <groupId>cc.funkemunky</groupId>
+            <artifactId>FlatfileDatabase</artifactId>
+            <version>1.2.2</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>cc.funkemunky</groupId>
+            <artifactId>MongoDatabase</artifactId>
+            <version>1.2.2</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

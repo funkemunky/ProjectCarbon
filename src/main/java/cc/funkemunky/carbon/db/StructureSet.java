@@ -1,32 +1,35 @@
 package cc.funkemunky.carbon.db;
 
+import cc.funkemunky.carbon.utils.json.JSONException;
+import cc.funkemunky.carbon.utils.json.JSONObject;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class StructureSet {
     public final String id;
-    public List<Structure> structures = new ArrayList<>();
 
-    public Optional<Structure> getStructureByName(String name) {
-        return structures.stream().filter(struct -> struct.name.equals(name)).findFirst();
+    protected JSONObject json = new JSONObject();
+
+    public void inputField(String key, Object object) {
+        try {
+            json.put(key, object);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void removeStructure(String name) {
-        structures.stream().filter(struct -> struct.name.equals(name)).forEach(structures::remove);
+    public <T> T getField(String key) {
+        try {
+            return (T) json.get(key);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        throw new NullPointerException("Object does not contain key \"" + key + "\"");
     }
 
-    public void addStructure(Structure structure) {
-        val optional = getStructureByName(structure.name);
-
-        optional.ifPresent(value -> structures.remove(value));
-
-        structures.add(structure);
+    protected String toJSON() {
+        return json.toString();
     }
 }

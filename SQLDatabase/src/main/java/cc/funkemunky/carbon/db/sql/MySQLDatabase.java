@@ -2,10 +2,10 @@ package cc.funkemunky.carbon.db.sql;
 
 import cc.funkemunky.carbon.db.Database;;
 import cc.funkemunky.carbon.db.DatabaseType;
-import cc.funkemunky.carbon.db.Structure;
 import cc.funkemunky.carbon.db.StructureSet;
 import cc.funkemunky.carbon.utils.MiscUtils;
 import cc.funkemunky.carbon.utils.security.GeneralUtils;
+import com.sun.jna.Structure;
 import lombok.Getter;
 
 import java.sql.*;
@@ -37,7 +37,7 @@ public class MySQLDatabase extends Database {
 
     @Override
     public void loadDatabase() {
-        try {
+        /*try {
             connectIfDisconected();
             PreparedStatement statement = connection.prepareStatement("select * from " + getName());
             ResultSet set = statement.executeQuery();
@@ -67,12 +67,12 @@ public class MySQLDatabase extends Database {
             }
         } catch(Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     @Override
     public void saveDatabase() {
-        try {
+        /*try {
             connectIfDisconected();
 
             PreparedStatement statement2 = connection.prepareStatement("delete ignore from " + getName());
@@ -90,7 +90,7 @@ public class MySQLDatabase extends Database {
             }
         } catch(Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     private void connectIfDisconected() {
