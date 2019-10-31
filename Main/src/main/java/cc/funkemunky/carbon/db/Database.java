@@ -1,16 +1,13 @@
 package cc.funkemunky.carbon.db;
 
-import cc.funkemunky.carbon.utils.MiscUtils;
+import cc.funkemunky.carbon.Carbon;
 import cc.funkemunky.carbon.utils.Pair;
-import cc.funkemunky.carbon.utils.json.JSONObject;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Getter
@@ -25,6 +22,7 @@ public abstract class Database {
         this.type = type;
 
         databaseValues = new CopyOnWriteArrayList<>();
+        Carbon.INSTANCE.getDatabases().put(name, this);
     }
 
     public abstract void loadDatabase();

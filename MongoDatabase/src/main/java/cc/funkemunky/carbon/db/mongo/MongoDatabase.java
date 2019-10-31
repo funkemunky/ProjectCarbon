@@ -1,17 +1,16 @@
 package cc.funkemunky.carbon.db.mongo;
 
-import cc.funkemunky.carbon.Carbon;
 import cc.funkemunky.carbon.db.Database;
 import cc.funkemunky.carbon.db.DatabaseType;
 import cc.funkemunky.carbon.db.StructureSet;
 import com.mongodb.Block;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
-import com.sun.jna.Structure;
 import org.bson.Document;
 
 import java.util.Set;
 
+//Compatible with 1.2 and 1.2.1.
 public class MongoDatabase extends Database {
     private MongoCollection<Document> collection;
 
@@ -20,7 +19,7 @@ public class MongoDatabase extends Database {
     public MongoDatabase(String name) {
         super(name, DatabaseType.MONGO);
 
-        collection = Carbon.INSTANCE.getMongo().getMongoDatabase().getCollection(name);
+        collection = mongo.getMongoDatabase().getCollection(name);
     }
 
     public MongoDatabase(String name, Mongo mongo) {
@@ -31,8 +30,7 @@ public class MongoDatabase extends Database {
 
     @Override
     public void loadDatabase() {
-        collection.find(Filters.exists("version", true))
-                .filter(Filters.eq("version", "2.0"))
+        collection.find()
                 .forEach((Block<? super Document>)doc -> {
                     StructureSet set = new StructureSet(doc.getString("id"));
 
@@ -54,9 +52,19 @@ public class MongoDatabase extends Database {
 
             document.put("version", "2.0");
 
+            for (String key : structSet.getObjects().keySet()) {
+                document.put(key, structSet.getObjects().get(key));
+            }
+
+            if(collection.find(Filters.eq("id", structSet.id)).first() != null) {
+                collection.updateMany(Filters.eq("id", structSet.id), document);
+            } else {
+                collection.insertOne(document);
+            }
         }
     }
 
+    //This is required for Mongo databases to work.
     public static Mongo initMongo(String database, String ip, int port, String username, String password) {
         return mongo = new Mongo(ip, port, database, username, password);
     }

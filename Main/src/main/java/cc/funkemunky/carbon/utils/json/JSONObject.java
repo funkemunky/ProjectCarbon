@@ -990,6 +990,10 @@ public class JSONObject {
         return this.map.keySet().iterator();
     }
 
+    public Set<String> keySet() {
+        return this.map.keySet();
+    }
+
     /**
      * Get the number of keys stored in the JSONObject.
      *

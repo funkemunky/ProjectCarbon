@@ -41,14 +41,14 @@ This project is an API meant to simplify communicating with the many different d
 ```java
 package cc.funkemunky.bans;
 
-import cc.funkemunky.carbon.Carbon;
+import cc.funkemunky.cc.funkemunky.carbon.Carbon;
 
 public class Zenbans {
 
-    private static Carbon carbon;
+    private static Carbon cc.funkemunky.carbon;
 
     public static void main(String[] args) {
-        carbon = new Carbon();
+        cc.funkemunky.carbon = new Carbon();
     }
 }
 ```
@@ -59,19 +59,19 @@ public class Zenbans {
 ```java
 package cc.funkemunky.bans;
 
-import cc.funkemunky.carbon.Carbon;
+import cc.funkemunky.cc.funkemunky.carbon.Carbon;
 
 public class Zenbans {
 
-    private static Carbon carbon;
+    private static Carbon cc.funkemunky.carbon;
 
     public static void main(String[] args) {
-        carbon = new Carbon();
+        cc.funkemunky.carbon = new Carbon();
 
         //Defaults to the system user.home directory.
-        carbon.createFlatfileDatabase("Test1");
+        cc.funkemunky.carbon.createFlatfileDatabase("Test1");
 
-        carbon.createFlatfileDatabase("/my/directory", "Test2");
+        cc.funkemunky.carbon.createFlatfileDatabase("/my/directory", "Test2");
     }
 }
 ```
@@ -80,16 +80,16 @@ public class Zenbans {
 ```java
 package cc.funkemunky.bans;
 
-import cc.funkemunky.carbon.Carbon;
+import cc.funkemunky.cc.funkemunky.carbon.Carbon;
 
 public class Zenbans {
 
-    private static Carbon carbon;
+    private static Carbon cc.funkemunky.carbon;
 
     public static void main(String[] args) {
-        carbon = new Carbon();
+        cc.funkemunky.carbon = new Carbon();
 
-        carbon.createSQLDatabase("test", "localhost", "username", "password", 3306);
+        cc.funkemunky.carbon.createSQLDatabase("test", "localhost", "username", "password", 3306);
     }
 }
 ```
@@ -98,21 +98,21 @@ public class Zenbans {
 ```java
 package cc.funkemunky.bans;
 
-import cc.funkemunky.carbon.Carbon;
+import cc.funkemunky.cc.funkemunky.carbon.Carbon;
 
 public class Zenbans {
 
-    private static Carbon carbon;
+    private static Carbon cc.funkemunky.carbon;
 
     public static void main(String[] args) {
-        carbon = new Carbon();
+        cc.funkemunky.carbon = new Carbon();
 
         //Method one
-        carbon.initMongo("localhost", 27017, "Carbon", "username", "password");
-        carbon.createMongoDatabase("Test1");
+        cc.funkemunky.carbon.initMongo("localhost", 27017, "Carbon", "username", "password");
+        cc.funkemunky.carbon.createMongoDatabase("Test1");
         
         //Method Two;
-        carbon.createMongoDatabase("Test2", carbon.initMongo("localhost", 27017, "Carbon", "username", "password"));
+        cc.funkemunky.carbon.createMongoDatabase("Test2", cc.funkemunky.carbon.initMongo("localhost", 27017, "Carbon", "username", "password"));
     }
 }
 ```
@@ -122,26 +122,26 @@ We are using a Flatfile database for this example. It will be the same for any d
 
 ### Getting a database
 ```java
-Database database = carbon.getDatabase("Test");
+Database database = cc.funkemunky.carbon.getDatabase("Test");
 ```
 
 ### Writing to and Getting From a database
 ```java
 package cc.funkemunky.bans;
 
-import cc.funkemunky.carbon.Carbon;
-import cc.funkemunky.carbon.db.Database;
+import cc.funkemunky.cc.funkemunky.carbon.Carbon;
+import cc.funkemunky.cc.funkemunky.carbon.db.Database;
 
 public class Zenbans {
 
-    private static Carbon carbon;
+    private static Carbon cc.funkemunky.carbon;
 
     public static void main(String[] args) {
-        carbon = new Carbon();
+        cc.funkemunky.carbon = new Carbon();
         
-        carbon.createFlatfileDatabase("Test");
+        cc.funkemunky.carbon.createFlatfileDatabase("Test");
         
-        Database database = carbon.getDatabase("Test");
+        Database database = cc.funkemunky.carbon.getDatabase("Test");
 
         database.inputField("example", "my file sucks.");
 

@@ -9,6 +9,13 @@
     <packaging>pom</packaging>
     <version>1.2.2</version>
 
+    <modules>
+        <module>SQLDatabase</module>
+        <module>FlatfileDatabase</module>
+        <module>MongoDatabase</module>
+        <module>Main</module>
+    </modules>
+
     <build>
         <defaultGoal>clean package</defaultGoal>
         <plugins>
@@ -62,11 +69,6 @@
             </resource>
         </resources>
     </build>
-    <modules>
-        <module>SQLDatabase</module>
-        <module>FlatfileDatabase</module>
-        <module>MongoDatabase</module>
-    </modules>
 
     <repositories>
         <repository>
@@ -78,7 +80,7 @@
     <dependencies>
         <dependency>
             <groupId>cc.funkemunky</groupId>
-            <artifactId>SQLDatabase</artifactId>
+            <artifactId>Main</artifactId>
             <version>1.2.2</version>
             <scope>compile</scope>
         </dependency>
@@ -95,15 +97,9 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.github.lombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>de.mkammerer</groupId>
-            <artifactId>argon2-jvm</artifactId>
-            <version>2.5</version>
+            <groupId>cc.funkemunky</groupId>
+            <artifactId>SQLDatabase</artifactId>
+            <version>1.2.2</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

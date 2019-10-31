@@ -2,18 +2,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>cc.funkemunky</groupId>
-    <artifactId>FlatfileDatabase</artifactId>
+    <artifactId>Main</artifactId>
     <version>1.2.2</version>
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
                 <configuration>
                     <source>8</source>
                     <target>8</target>
@@ -31,17 +29,18 @@
 
     <dependencies>
         <dependency>
-            <groupId>cc.funkemunky</groupId>
-            <artifactId>Main</artifactId>
-            <version>1.2.2</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>cc.funkemunky.utils</groupId>
+            <groupId>org.github.lombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.0</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>de.mkammerer</groupId>
+            <artifactId>argon2-jvm</artifactId>
+            <version>2.5</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
+
 
 </project>

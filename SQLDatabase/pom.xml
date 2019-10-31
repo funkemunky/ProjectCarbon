@@ -7,11 +7,31 @@
     <groupId>cc.funkemunky</groupId>
     <artifactId>SQLDatabase</artifactId>
     <version>1.2.2</version>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>funkemunky-repo</id>
+            <url>http://nexus.funkemunky.cc/content/repositories/releases/</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
-            <groupId>cc.funkemunky.utils</groupId>
-            <artifactId>ProjectCarbon</artifactId>
+            <groupId>cc.funkemunky</groupId>
+            <artifactId>Main</artifactId>
             <version>1.2.2</version>
             <scope>provided</scope>
         </dependency>
