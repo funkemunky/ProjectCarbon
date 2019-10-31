@@ -1,0 +1,12 @@
+cc.funkemunky.carbon
+cc.funkemunky.carbon.db
+cc.funkemunky.carbon.db.flatfile
+cc.funkemunky.carbon.db.mongo
+cc.funkemunky.carbon.db.sql
+cc.funkemunky.carbon.exceptions
+cc.funkemunky.carbon.utils
+cc.funkemunky.carbon.utils.json
+cc.funkemunky.carbon.utils.security
+cc.funkemunky.carbon.utils.security.encryption
+cc.funkemunky.carbon.utils.security.hash
+cc.funkemunky.carbon.utils.security.hash.impl
