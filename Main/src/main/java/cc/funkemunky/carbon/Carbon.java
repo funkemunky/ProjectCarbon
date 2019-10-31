@@ -15,15 +15,18 @@ public class Carbon {
     private Map<String, Database> databases = new ConcurrentHashMap<>();
 
     public Carbon() {
-        INSTANCE = this;
         Hash.loadHashes();
     }
 
-    public Database getDatabase(String name) {
-        return databases.get(name);
+    public <T extends Database> T getDatabase(String name) {
+        return (T) databases.get(name);
     }
 
     public boolean isDatabase(String name) {
         return databases.containsKey(name);
+    }
+
+    public static void init() {
+        INSTANCE = new Carbon();
     }
 }

@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>cc.funkemunky</groupId>
-    <artifactId>MongoDatabase</artifactId>
+    <artifactId>Example</artifactId>
     <version>1.2.2</version>
 
     <build>
@@ -23,32 +23,14 @@
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>funkemunky-repo</id>
-            <url>http://nexus.funkemunky.cc/content/repositories/releases/</url>
-        </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
-            <groupId>cc.funkemunky</groupId>
-            <artifactId>Main</artifactId>
-            <version>1.2.2</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>cc.funkemunky.utils</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongo-java-driver</artifactId>
-            <version>3.8.0</version>
+            <artifactId>ProjectCarbon</artifactId>
+            <version>1.2.2</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
+
 
 </project>

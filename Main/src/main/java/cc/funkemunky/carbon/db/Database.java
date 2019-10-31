@@ -44,8 +44,8 @@ public abstract class Database {
     public StructureSet updateObject(StructureSet set) {
         if(contains(set.id)) {
             databaseValues.remove(get(name));
-            databaseValues.add(set);
         }
+        databaseValues.add(set);
         return set;
     }
 
@@ -53,7 +53,7 @@ public abstract class Database {
         Optional<StructureSet> getSet = databaseValues
                 .stream().filter(set -> set.id.equals(id)).findFirst();
 
-        return null;
+        return getSet.orElse(null);
     }
 
     public boolean contains(String id) {

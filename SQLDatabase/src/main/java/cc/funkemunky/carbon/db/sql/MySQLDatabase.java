@@ -19,7 +19,8 @@ public class MySQLDatabase extends Database {
     @Getter
     private Connection connection;
 
-    private String ip = "localhost", username = "root", password = "password", database;
+    protected static String ip = "localhost", username = "root", password = "password";
+    private String database;
     private int port = 3306;
 
     public MySQLDatabase(String name) {
@@ -29,12 +30,9 @@ public class MySQLDatabase extends Database {
         connectIfDisconected();
     }
 
-    public MySQLDatabase(String name, String ip, String username, String password, String database, int port) {
+    public MySQLDatabase(String name, String database, int port) {
         super(name, DatabaseType.SQL);
 
-        this.ip = ip;
-        this.username = username;
-        this.password = password;
         this.port = port;
         this.database = database;
         connectIfDisconected();
@@ -165,5 +163,11 @@ public class MySQLDatabase extends Database {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void setCredentials(String ip, String username, String password) {
+        MySQLDatabase.ip = ip;
+        MySQLDatabase.password = password;
+        MySQLDatabase.username = username;
     }
 }

@@ -14,6 +14,7 @@
         <module>FlatfileDatabase</module>
         <module>MongoDatabase</module>
         <module>Main</module>
+        <module>Example</module>
     </modules>
 
     <build>

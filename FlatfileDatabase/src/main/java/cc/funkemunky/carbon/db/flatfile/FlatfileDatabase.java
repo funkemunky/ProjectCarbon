@@ -62,14 +62,12 @@ public class FlatfileDatabase extends Database {
             for (String fileId : jsonEntries.keySet()) {
                 JSONObject object = jsonEntries.get(fileId);
 
-                StructureSet set = new StructureSet(object.getString("id"));
-                set.inputField("fileId", fileId);
+                StructureSet set = new StructureSet(fileId);
                 for (String key : object.keySet()) {
-                    if(key.equals("id")) continue;
                     set.inputField(key, object.get(key));
                 }
 
-                updateObject(set);
+                getDatabaseValues().add(set);
             }
         } catch(JSONException e) {
             e.printStackTrace();
@@ -80,11 +78,7 @@ public class FlatfileDatabase extends Database {
     public void saveDatabase() {
         try {
             for (StructureSet struct : getDatabaseValues()) {
-                String fileId = struct.getField("fileId");
-
-                JSONObject object = jsonEntries.getOrDefault(fileId, new JSONObject());
-
-                object.put("id", struct.id);
+                JSONObject object = jsonEntries.getOrDefault(struct.id, new JSONObject());
 
                 struct.removeField("fileId");
 
@@ -92,7 +86,7 @@ public class FlatfileDatabase extends Database {
                     object.put(key, struct.getObjects().get(key));
                 }
 
-                File file = new File(directory, fileId + ".json");
+                File file = new File(directory, struct.id + ".json");
 
                 if(!file.exists()) {
                     file.createNewFile();
@@ -112,7 +106,8 @@ public class FlatfileDatabase extends Database {
     public void convertFromLegacy(File oldFile) {
         //Saving backup.
         FunkeFile old = new FunkeFile(oldFile);
-        FunkeFile file = new FunkeFile(oldFile.getParentFile().getPath(), getName() + "-backup-" + System.currentTimeMillis() + ".txt");
+        FunkeFile file = new FunkeFile(oldFile.getParentFile().getPath(),
+                getName() + "-backup-" + System.currentTimeMillis() + ".txt");
         old.getLines().forEach(file::addLine);
         file.write();
         old.getLines().clear();
