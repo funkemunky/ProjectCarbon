@@ -7,7 +7,7 @@
 
     <groupId>cc.funkemunky</groupId>
     <artifactId>FlatfileDatabase</artifactId>
-    <version>1.2.2</version>
+    <version>1.2.3</version>
     <build>
         <plugins>
             <plugin>
@@ -33,7 +33,7 @@
         <dependency>
             <groupId>cc.funkemunky</groupId>
             <artifactId>Main</artifactId>
-            <version>1.2.2</version>
+            <version>1.2.3</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
