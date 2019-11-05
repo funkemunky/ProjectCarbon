@@ -7,7 +7,7 @@
 
     <groupId>cc.funkemunky</groupId>
     <artifactId>MongoDatabase</artifactId>
-    <version>1.2.3</version>
+    <version>1.2.4</version>
 
     <build>
         <plugins>
@@ -62,7 +62,7 @@
         <dependency>
             <groupId>cc.funkemunky</groupId>
             <artifactId>Main</artifactId>
-            <version>1.2.3</version>
+            <version>1.2.4</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -74,7 +74,7 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongo-java-driver</artifactId>
-            <version>3.8.0</version>
+            <version>3.11.0</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

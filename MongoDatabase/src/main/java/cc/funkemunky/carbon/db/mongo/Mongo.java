@@ -1,11 +1,14 @@
 package cc.funkemunky.carbon.db.mongo;
 
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 import com.mongodb.MongoCredential;
 import com.mongodb.client.MongoDatabase;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
+
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -27,6 +30,10 @@ public class Mongo {
         connect();
     }
 
+    public Mongo(String connectionString) {
+        connect(connectionString);
+    }
+
     public void connect() {
        try {
             this.client = new MongoClient(ip, port);
@@ -43,6 +50,16 @@ public class Mongo {
         System.out.println("Connected to Mongo database with IP " + ip + " and name " + database + ".");
         this.mongoDatabase = client.getDatabase(database);
         this.connected = true;
+    }
+
+    public void connect(String string) {
+        MongoClientURI uri = new MongoClientURI(string);
+
+        this.client = new MongoClient(uri);
+        this.mongoDatabase = client.getDatabase(this.database = uri.getDatabase());
+        this.connected = true;
+        this.username = uri.getUsername();
+        this.password = String.copyValueOf(Objects.requireNonNull(uri.getPassword()));
     }
 
     public void disconnect() {

@@ -7,7 +7,7 @@
     <groupId>cc.funkemunky.utils</groupId>
     <artifactId>ProjectCarbon</artifactId>
     <packaging>pom</packaging>
-    <version>1.2.3</version>
+    <version>1.2.4</version>
 
     <modules>
         <module>SQLDatabase</module>
@@ -89,25 +89,25 @@
         <dependency>
             <groupId>cc.funkemunky</groupId>
             <artifactId>Main</artifactId>
-            <version>1.2.3</version>
+            <version>1.2.4</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>cc.funkemunky</groupId>
             <artifactId>FlatfileDatabase</artifactId>
-            <version>1.2.3</version>
+            <version>1.2.4</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>cc.funkemunky</groupId>
             <artifactId>MongoDatabase</artifactId>
-            <version>1.2.3</version>
+            <version>1.2.4</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>cc.funkemunky</groupId>
             <artifactId>SQLDatabase</artifactId>
-            <version>1.2.3</version>
+            <version>1.2.4</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
