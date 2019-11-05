@@ -27,6 +27,14 @@ public class Mongo {
         this.database = database;
         this.username = username;
         this.password = password;
+        enabled = true;
+        connect();
+    }
+
+    public Mongo(String ip, int port, String database) {
+        this.ip = ip;
+        this.port = port;
+        this.database = database;
         connect();
     }
 
