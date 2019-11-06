@@ -2,14 +2,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
+    <parent>
+        <artifactId>ProjectCarbon</artifactId>
+        <groupId>cc.funkemunky.utils</groupId>
+        <version>1.2.4</version>
+    </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>cc.funkemunky</groupId>
-    <artifactId>MongoDatabase</artifactId>
+    <groupId>cc.funkemunky.utils</groupId>
+    <artifactId>ProjectCarbon-Assembly</artifactId>
     <version>1.2.4</version>
 
     <build>
+        <defaultGoal>clean package</defaultGoal>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -31,24 +36,28 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <minimizeJar>true</minimizeJar>
+                            <minimizeJar>false</minimizeJar>
+                            <relocations>
+                                <relocation>
+                                    <pattern>com.mongodb</pattern>
+                                    <shadedPattern>cc.funkemunky.carbon.depends.com.mongodb</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.bson</pattern>
+                                    <shadedPattern>cc.funkemunky.depends.org.bson</shadedPattern>
+                                </relocation>
+                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <relocations>
-                        <relocation>
-                            <pattern>com.mongodb</pattern>
-                            <shadedPattern>cc.funkemunky.carbon.depends.com.mongodb</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>org.bson</pattern>
-                            <shadedPattern>cc.funkemunky.carbon.depends.org.bson</shadedPattern>
-                        </relocation>
-                    </relocations>
-                </configuration>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
     </build>
 
     <repositories>
@@ -63,20 +72,27 @@
             <groupId>cc.funkemunky</groupId>
             <artifactId>Main</artifactId>
             <version>1.2.4</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>cc.funkemunky.utils</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.0</version>
-            <scope>provided</scope>
+            <groupId>cc.funkemunky</groupId>
+            <artifactId>FlatfileDatabase</artifactId>
+            <version>1.2.4</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongo-java-driver</artifactId>
-            <version>3.8.0</version>
+            <groupId>cc.funkemunky</groupId>
+            <artifactId>MongoDatabase</artifactId>
+            <version>1.2.4</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>cc.funkemunky</groupId>
+            <artifactId>SQLDatabase</artifactId>
+            <version>1.2.4</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
+
 
 </project>

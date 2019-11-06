@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>ProjectCarbon</artifactId>
+    <groupId>cc.funkemunky.utils</groupId>
+    <version>1.2.4</version>
+  </parent>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>cc.funkemunky</groupId>
-  <artifactId>MongoDatabase</artifactId>
+  <groupId>cc.funkemunky.utils</groupId>
+  <artifactId>ProjectCarbon-Assembly</artifactId>
   <version>1.2.4</version>
   <build>
+    <defaultGoal>clean package</defaultGoal>
+    <resources>
+      <resource>
+        <filtering>true</filtering>
+        <directory>src/main/resources</directory>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -24,22 +36,20 @@
               <goal>shade</goal>
             </goals>
             <configuration>
-              <minimizeJar>true</minimizeJar>
+              <minimizeJar>false</minimizeJar>
+              <relocations>
+                <relocation>
+                  <pattern>com.mongodb</pattern>
+                  <shadedPattern>cc.funkemunky.carbon.depends.com.mongodb</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.bson</pattern>
+                  <shadedPattern>cc.funkemunky.depends.org.bson</shadedPattern>
+                </relocation>
+              </relocations>
             </configuration>
           </execution>
         </executions>
-        <configuration>
-          <relocations>
-            <relocation>
-              <pattern>com.mongodb</pattern>
-              <shadedPattern>cc.funkemunky.carbon.depends.com.mongodb</shadedPattern>
-            </relocation>
-            <relocation>
-              <pattern>org.bson</pattern>
-              <shadedPattern>cc.funkemunky.carbon.depends.org.bson</shadedPattern>
-            </relocation>
-          </relocations>
-        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -49,25 +59,5 @@
       <url>http://nexus.funkemunky.cc/content/repositories/releases/</url>
     </repository>
   </repositories>
-  <dependencies>
-    <dependency>
-      <groupId>cc.funkemunky</groupId>
-      <artifactId>Main</artifactId>
-      <version>1.2.4</version>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>argon2-jvm</artifactId>
-          <groupId>de.mkammerer</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>cc.funkemunky.utils</groupId>
-      <artifactId>lombok</artifactId>
-      <version>1.18.0</version>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
 </project>
 
