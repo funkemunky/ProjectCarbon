@@ -3,11 +3,13 @@ package cc.funkemunky.carbon.db.mongo;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoDatabase;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 
+import java.util.Collections;
 import java.util.Objects;
 
 @Getter
@@ -44,11 +46,11 @@ public class Mongo {
 
     public void connect() {
        try {
-            this.client = new MongoClient(ip, port);
-            if(enabled) {
-                val credential = MongoCredential.createCredential(username, database, password.toCharArray());
-                client.getCredentialsList().add(credential);
-            }
+           if(enabled) {
+               this.client = new MongoClient(new ServerAddress(ip, port),
+                       Collections.singletonList(
+                               MongoCredential.createCredential(username, database, password.toCharArray())));
+           } else this.client = new MongoClient(ip, port);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Could not connect to the database!");
