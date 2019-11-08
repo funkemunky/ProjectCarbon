@@ -56,11 +56,8 @@ public class MongoDatabase extends Database {
                 document.put(key, structSet.getObjects().get(key));
             }
 
-            if(collection.find(Filters.eq("id", structSet.id)).first() != null) {
-                collection.updateMany(Filters.eq("id", structSet.id), document);
-            } else {
-                collection.insertOne(document);
-            }
+            collection.deleteMany(Filters.eq("id", structSet.id));
+            collection.insertOne(document);
         }
     }
 
