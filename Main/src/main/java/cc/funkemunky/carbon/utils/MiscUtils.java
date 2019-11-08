@@ -1,5 +1,6 @@
 package cc.funkemunky.carbon.utils;
 
+import cc.funkemunky.carbon.utils.reflection.types.WrappedClass;
 import cc.funkemunky.carbon.utils.security.GeneralUtils;
 import cc.funkemunky.carbon.utils.security.hash.Hash;
 import cc.funkemunky.carbon.utils.security.hash.HashType;
@@ -9,8 +10,13 @@ import java.io.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class MiscUtils {
-    public static <T> T parseObjectFromString(String s, Class<T> clazz) throws Exception {
-        return clazz.getConstructor(new Class[] {String.class}).newInstance(s);
+    public static <T> T parseObjectFromString(String s, Class<T> clazz) {
+        WrappedClass wrappedClass = new WrappedClass(clazz);
+        return wrappedClass.getConstructor(new Class[] {String.class}).newInstance(s);
+    }
+
+    public static <T> T parseObjectFromString(String s, WrappedClass wrapped) {
+        return (T) wrapped.getConstructor(new Class[] {String.class}).newInstance(s);
     }
 
     public static byte[] getBytesOfObject(Object object) throws IOException {

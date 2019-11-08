@@ -55,6 +55,50 @@ public class StructureSet {
         return null;
     }
 
+    public int getInteger(String key) {
+        if(objects.containsKey(key)) {
+            Object object = objects.get(key);
+
+            return (int) object;
+        }
+        return -1;
+    }
+
+    public double getDouble(String key) {
+        if(objects.containsKey(key)) {
+            Object object = objects.get(key);
+
+            if(object instanceof Integer) {
+                return (int) object;
+            }
+
+            return (double) object;
+        }
+        return -1;
+    }
+
+    public float getFloat(String key) {
+        if(objects.containsKey(key)) {
+            Object object = objects.get(key);
+
+            if(object instanceof Integer) {
+                return (int) object;
+            }
+
+            return (float) object;
+        }
+        return -1;
+    }
+
+    public long getLong(String key) {
+        if(objects.containsKey(key)) {
+            Object object = objects.get(key);
+
+            return (long) object;
+        }
+        return -1;
+    }
+
     public <T> T getEncryptedField(String key, String password, HashType type) {
         if(objects.containsKey((key + ":@:" + type.name()))) {
             String string = (String) objects.get((key + ":@:" + type.name()));

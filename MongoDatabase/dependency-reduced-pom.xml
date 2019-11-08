@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>cc.funkemunky</groupId>
   <artifactId>MongoDatabase</artifactId>
-  <version>1.2.4</version>
+  <version>1.2.5</version>
   <build>
     <plugins>
       <plugin>
@@ -55,12 +55,6 @@
       <artifactId>Main</artifactId>
       <version>1.2.4</version>
       <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>argon2-jvm</artifactId>
-          <groupId>de.mkammerer</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>cc.funkemunky.utils</groupId>

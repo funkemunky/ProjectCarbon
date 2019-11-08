@@ -3,12 +3,12 @@
   <parent>
     <artifactId>ProjectCarbon</artifactId>
     <groupId>cc.funkemunky.utils</groupId>
-    <version>1.2.4</version>
+    <version>1.2.5</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>cc.funkemunky.utils</groupId>
   <artifactId>ProjectCarbon-Assembly</artifactId>
-  <version>1.2.4</version>
+  <version>1.2.5</version>
   <build>
     <defaultGoal>clean package</defaultGoal>
     <resources>

@@ -7,7 +7,7 @@
     <groupId>cc.funkemunky.utils</groupId>
     <artifactId>ProjectCarbon</artifactId>
     <packaging>pom</packaging>
-    <version>1.2.4</version>
+    <version>1.2.5</version>
 
     <modules>
         <module>SQLDatabase</module>

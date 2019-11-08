@@ -7,7 +7,7 @@
 
     <groupId>cc.funkemunky</groupId>
     <artifactId>MongoDatabase</artifactId>
-    <version>1.2.4</version>
+    <version>1.2.5</version>
 
     <build>
         <plugins>
