@@ -1,13 +1,14 @@
 package cc.funkemunky.carbon.db.mongo;
 
-import com.mongodb.MongoClient;
+import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoClientURI;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.val;
 
 import java.util.Collections;
 import java.util.Objects;
@@ -19,9 +20,20 @@ public class Mongo {
     private MongoDatabase mongoDatabase;
     private MongoClient client;
 
-    private String database = "Carbon", ip = "127.0.0.1", username = "username", password = "password";
+    private String database = "Carbon", ip = "127.0.0.1", username = "username", password = "password", authDB = "";
     private int port = 27017;
     private boolean enabled = false, connected = false;
+
+    public Mongo(String ip, int port, String database, String authDB, String username, String password) {
+        this.ip = ip;
+        this.port = port;
+        this.database = database;
+        this.authDB = authDB;
+        this.username = username;
+        this.password = password;
+        enabled = true;
+        connect();
+    }
 
     public Mongo(String ip, int port, String database, String username, String password) {
         this.ip = ip;
@@ -47,10 +59,18 @@ public class Mongo {
     public void connect() {
        try {
            if(enabled) {
-               this.client = new MongoClient(new ServerAddress(ip, port),
-                       Collections.singletonList(
-                               MongoCredential.createCredential(username, database, password.toCharArray())));
-           } else this.client = new MongoClient(ip, port);
+               this.client = MongoClients.create(
+                       MongoClientSettings.builder()
+                               .applyToClusterSettings(builder ->
+                                       builder.hosts(
+                                               Collections
+                                                       .singletonList(new ServerAddress(ip, port))))
+                               .credential(MongoCredential.createCredential(username, authDB.length() > 0 ? authDB : database, password.toCharArray()))
+                               .build());
+           } else this.client = MongoClients.create(MongoClientSettings
+                   .builder()
+                   .applyToClusterSettings(builder -> builder.hosts(Collections
+                           .singletonList(new ServerAddress("host1", 27017)))).build());
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Could not connect to the database!");
@@ -65,7 +85,7 @@ public class Mongo {
     public void connect(String string) {
         MongoClientURI uri = new MongoClientURI(string);
 
-        this.client = new MongoClient(uri);
+        this.client = MongoClients.create(string);
         this.mongoDatabase = client.getDatabase(this.database = uri.getDatabase());
         this.connected = true;
         this.username = uri.getUsername();

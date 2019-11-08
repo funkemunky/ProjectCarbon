@@ -65,6 +65,10 @@ public class MongoDatabase extends Database {
     }
 
     //This is required for Mongo databases to work.
+
+    public static Mongo initMongo(String database, String authDB, String ip, int port, String username, String password) {
+        return mongo = new Mongo(ip, port, database, authDB, username, password);
+    }
     public static Mongo initMongo(String database, String ip, int port, String username, String password) {
         return mongo = new Mongo(ip, port, database, username, password);
     }

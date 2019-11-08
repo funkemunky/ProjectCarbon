@@ -83,6 +83,8 @@ public class StructureSet {
 
             if(object instanceof Integer) {
                 return (int) object;
+            } else if(object instanceof Double) {
+                return (float) (double) object;
             }
 
             return (float) object;
