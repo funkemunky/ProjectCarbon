@@ -62,7 +62,14 @@ public class FlatfileDatabase extends Database {
                     getDatabaseValues().remove(structSet);
                 } else structSet = new StructureSet(id);
 
-                Object toInsert = MiscUtils.parseObjectFromString(objectString, Reflections.getClass(className));
+                byte[] fromString = GeneralUtils.bytesFromString(objectString);
+
+                Object toInsert = null;
+                try {
+                    toInsert = MiscUtils.objectFromBytes(fromString);
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
 
                 structSet.inputField(name, toInsert);
 
