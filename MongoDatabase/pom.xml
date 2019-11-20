@@ -62,7 +62,7 @@
         <dependency>
             <groupId>cc.funkemunky</groupId>
             <artifactId>Main</artifactId>
-            <version>1.2.4</version>
+            <version>1.2.5</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
