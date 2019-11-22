@@ -16,6 +16,7 @@ public abstract class Database {
     private String name;
     private DatabaseType type;
     private List<StructureSet> databaseValues;
+    protected long lastLocalSave, lastGlobalSave;
 
     public Database(String name, DatabaseType type) {
         this.name = name;
@@ -29,7 +30,9 @@ public abstract class Database {
 
     public abstract void saveDatabase();
 
-    public StructureSet createStructure(String name, Pair<String, Object>... pairs) {
+    public abstract void updateDatabase();
+
+    public synchronized StructureSet createStructure(String name, Pair<String, Object>... pairs) {
         StructureSet set = new StructureSet(name);
 
         for (Pair<String, Object> pair : pairs) {
@@ -41,7 +44,7 @@ public abstract class Database {
         return set;
     }
 
-    public StructureSet updateObject(StructureSet set) {
+    public synchronized StructureSet updateObject(StructureSet set) {
         if(contains(set.id)) {
             databaseValues.remove(get(name));
         }
@@ -49,20 +52,20 @@ public abstract class Database {
         return set;
     }
 
-    public StructureSet get(String id) {
+    public synchronized StructureSet get(String id) {
         Optional<StructureSet> getSet = databaseValues
-                .stream().filter(set -> set.id.equals(id)).findFirst();
+                .parallelStream().filter(set -> set.id.equals(id)).findFirst();
 
         return getSet.orElse(null);
     }
 
-    public boolean contains(String id) {
+    public synchronized boolean contains(String id) {
         return databaseValues
-                .stream().anyMatch(set -> set.id.equals(id));
+                .parallelStream().anyMatch(set -> set.id.equals(id));
     }
 
-    public boolean remove(String id) {
-        List<StructureSet> sets = databaseValues.stream()
+    public synchronized boolean remove(String id) {
+        List<StructureSet> sets = databaseValues.parallelStream()
                 .filter(set -> set.id.equals(id))
                 .collect(Collectors.toList());
 

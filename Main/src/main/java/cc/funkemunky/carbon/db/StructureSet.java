@@ -1,6 +1,7 @@
 package cc.funkemunky.carbon.db;
 
 import cc.funkemunky.carbon.utils.MiscUtils;
+import cc.funkemunky.carbon.utils.Pair;
 import cc.funkemunky.carbon.utils.json.JSONException;
 import cc.funkemunky.carbon.utils.json.JSONObject;
 import cc.funkemunky.carbon.utils.security.GeneralUtils;
@@ -21,13 +22,21 @@ public class StructureSet {
     public final String id;
 
     @Getter
-    private Map<String, Object> objects = new HashMap<>();
+    private Map<String, Pair<Long, Object>> objects = new HashMap<>();
 
     public void inputField(String key, Object object) {
-        objects.put(key, object);
+        inputField(key, System.currentTimeMillis(), object);
+    }
+
+    public void inputField(String key, long lastUpdate, Object object) {
+        objects.put(key, new Pair<>(lastUpdate, object));
     }
 
     public void inputEncryptedField(String key, Object object, String password, HashType type) {
+        inputEncryptedField(key, System.currentTimeMillis(), object, password, type);
+    }
+
+    public void inputEncryptedField(String key, long lastUpdate, Object object, String password, HashType type) {
         Hash hash = Hash.getHashByType(type);
 
         String hashed = hash.hash(password);
@@ -35,7 +44,8 @@ public class StructureSet {
             byte[] encryptedBytes = AES.encrypt(MiscUtils.getBytesOfObject(object), password);
             String encryptedString = GeneralUtils.bytesToString(encryptedBytes);
 
-            objects.put(key + ":@:" + type.name(), encryptedString + ":@@:" + hashed);
+            objects.put(key + ":@:" + type.name(),
+                    new Pair<>(lastUpdate, encryptedString + ":@@:" + hashed));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -43,10 +53,10 @@ public class StructureSet {
 
     public <T> T getField(String key) {
         if(objects.containsKey(key)) {
-            Object object = objects.get(key);
+            Pair<Long, Object> object = objects.get(key);
 
             try {
-                return (T) object;
+                return (T) object.value;
             } catch(ClassCastException e) {
                 return null;
             }
@@ -57,53 +67,54 @@ public class StructureSet {
 
     public int getInteger(String key) {
         if(objects.containsKey(key)) {
-            Object object = objects.get(key);
+            Pair<Long, Object> object = objects.get(key);
 
-            return (int) object;
+            return (int) object.value;
         }
         return -1;
     }
 
     public double getDouble(String key) {
         if(objects.containsKey(key)) {
-            Object object = objects.get(key);
+            Pair<Long, Object> object = objects.get(key);
 
-            if(object instanceof Integer) {
-                return (int) object;
+            if(object.value instanceof Integer) {
+                return (int) object.value;
             }
 
-            return (double) object;
+            return (double) object.value;
         }
         return -1;
     }
 
     public float getFloat(String key) {
         if(objects.containsKey(key)) {
-            Object object = objects.get(key);
+            Pair<Long, Object> object = objects.get(key);
 
-            if(object instanceof Integer) {
-                return (int) object;
-            } else if(object instanceof Double) {
-                return (float) (double) object;
+            if(object.value instanceof Integer) {
+                return (int) object.value;
+            } else if(object.value instanceof Double) {
+                return (float) (double) object.value;
             }
 
-            return (float) object;
+            return (float) object.value;
         }
         return -1;
     }
 
     public long getLong(String key) {
         if(objects.containsKey(key)) {
-            Object object = objects.get(key);
+            Pair<Long, Object> object = objects.get(key);
 
-            return (long) object;
+            return (long) object.value;
         }
         return -1;
     }
 
     public <T> T getEncryptedField(String key, String password, HashType type) {
         if(objects.containsKey((key + ":@:" + type.name()))) {
-            String string = (String) objects.get((key + ":@:" + type.name()));
+            Pair<Long, Object> pair = objects.get((key + ":@:" + type.name()));
+            String string = (String) pair.value;
             String[] split = string.split(":@@:");
             String encrypted = split[0];
             String hashedPass = split[1];

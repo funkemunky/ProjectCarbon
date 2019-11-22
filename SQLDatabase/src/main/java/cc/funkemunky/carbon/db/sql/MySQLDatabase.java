@@ -7,11 +7,14 @@ import cc.funkemunky.carbon.utils.MiscUtils;
 import cc.funkemunky.carbon.utils.Pair;
 import cc.funkemunky.carbon.utils.security.GeneralUtils;
 import lombok.Getter;
+import lombok.val;
 
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 //This is compatible with 1.2 and 1.2.1. No need to convert anything.
@@ -62,6 +65,14 @@ public class MySQLDatabase extends Database {
 
                 Object toInsert;
 
+                long update;
+
+                if(value.contains(":@@@:")) {
+                    String[] split = value.split(":@@@:");
+                    value = split[0];
+                    update = Long.parseLong(split[1]);
+                } else update = 0;
+
                 byte[] array = GeneralUtils.bytesFromString(value);
                 toInsert = MiscUtils.objectFromBytes(array);
 
@@ -102,8 +113,8 @@ public class MySQLDatabase extends Database {
 
                 toExecute.append("update ")
                         .append(getName())
-                        .append(" set value=")
-                        .append(GeneralUtils.bytesToString(MiscUtils.getBytesOfObject(struct.getField(name))))
+                        .append(" set value=").append(GeneralUtils.bytesToString(MiscUtils.getBytesOfObject(struct.getField(name))))
+                        .append(":@@@:").append(struct.getObjects().get(name).key)
                         .append(" where id = '")
                         .append(id)
                         .append("' and name = '")
@@ -130,9 +141,10 @@ public class MySQLDatabase extends Database {
                             .append(struct.id)
                             .append("', '")
                             .append(key)
-                            .append("', ")
+                            .append("', '")
                             .append(GeneralUtils.bytesToString(MiscUtils.getBytesOfObject(struct.getField(key))))
-                            .append(");");
+                            .append(":@@@:").append(struct.getObjects().get(key).key)
+                            .append("');");
                 }
             }
 
@@ -143,6 +155,69 @@ public class MySQLDatabase extends Database {
             e.printStackTrace();
         }
      }
+
+    @Override
+    public void updateDatabase() {
+        List<StructureSet> latestUpdates = Collections.synchronizedList(new CopyOnWriteArrayList<>());
+
+        try {
+            connectIfDisconected();
+            PreparedStatement statement = connection.prepareStatement("select * from " + getName());
+            ResultSet set = statement.executeQuery();
+
+            //We clear here instead of beginning in case there's something wrong grabbing values. If an error occurs
+            //grabbing everything, it won't clear the values cached in the list without saving, causing data loss.
+            while(set.next()) {
+                String id = set.getString("id");
+                String name = set.getString("name");
+                String value = set.getString("value");
+
+                StructureSet structSet;
+
+                if(latestUpdates.stream().anyMatch(sset -> sset.id.equals(id))) {
+                    structSet = latestUpdates.stream().filter(sset -> sset.id.equals(id)).findFirst().get();
+                } else {
+                    structSet = new StructureSet(id);
+                }
+
+                Object toInsert;
+
+                if(value.contains(":@@@:")) {
+                    String[] split = value.split(":@@@:");
+                    value = split[0];
+                    long update = Long.parseLong(split[1]);
+                    byte[] array = GeneralUtils.bytesFromString(value);
+                    toInsert = MiscUtils.objectFromBytes(array);
+
+                    structSet.inputField(name, toInsert);
+                    latestUpdates.add(structSet);
+                }
+            }
+            statement.close();
+        } catch(SQLException | IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        latestUpdates.parallelStream()
+                .filter(set -> !contains(set.id))
+                .forEach(set -> {
+                    updateObject(set);
+                    latestUpdates.remove(set);
+                });
+
+        latestUpdates.parallelStream().forEach(set -> {
+            StructureSet oldSet = get(set.id);
+
+            oldSet.getObjects().forEach((key, pair) -> {
+                val updated = set.getObjects().get(key);
+
+                if(updated.key > pair.key) {
+                    oldSet.inputField(key, updated.key, updated.value);
+                }
+            });
+            latestUpdates.remove(set);
+        });
+    }
 
     private void connectIfDisconected() {
         try {
