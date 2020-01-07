@@ -41,6 +41,7 @@ public class FlatfileDatabase extends Database {
 
     @Override
     public void loadDatabase() {
+        super.loadDatabase();
         file.readFile();
         //Clearing after read file to prevent data loss of cache if error occurs.
         getDatabaseValues().clear();
@@ -92,20 +93,20 @@ public class FlatfileDatabase extends Database {
 
     @Override
     public void saveDatabase() {
-        file.clear();
-
         //Adding lines.
-        for (StructureSet structSet : getDatabaseValues()) {
-            structSet.getObjects().forEach((key, object) -> {
-                try {
-                    String objectString = GeneralUtils.bytesToString(MiscUtils.getBytesOfObject(object));
-                    file.addLine(structSet.id + ":@@@:" + key + ":@@@:" + object.getClass().getName()
-                            + ":@@@:" + objectString + ":@@@:" + object.key);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-        }
+        getDatabaseValues().parallelStream()
+                .forEach(set -> {
+
+                    set.getObjects().forEach((key, object) -> {
+                        try {
+                            String objectString = GeneralUtils.bytesToString(MiscUtils.getBytesOfObject(object));
+                            file.addLine(set.id + ":@@@:" + key + ":@@@:" + object.getClass().getName()
+                                    + ":@@@:" + objectString + ":@@@:" + object.key);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                });
 
         lastLocalSave = System.currentTimeMillis();
 

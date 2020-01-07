@@ -5,13 +5,13 @@
     <parent>
         <artifactId>ProjectCarbon</artifactId>
         <groupId>cc.funkemunky.utils</groupId>
-        <version>1.2.6</version>
+        <version>1.2.7</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>cc.funkemunky.utils</groupId>
     <artifactId>ProjectCarbon-Assembly</artifactId>
-    <version>1.2.6</version>
+    <version>1.2.7</version>
 
     <build>
         <defaultGoal>clean package</defaultGoal>
@@ -71,25 +71,25 @@
         <dependency>
             <groupId>cc.funkemunky</groupId>
             <artifactId>Main</artifactId>
-            <version>1.2.6</version>
+            <version>1.2.7</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>cc.funkemunky</groupId>
             <artifactId>FlatfileDatabase</artifactId>
-            <version>1.2.6</version>
+            <version>1.2.7</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>cc.funkemunky</groupId>
             <artifactId>MongoDatabase</artifactId>
-            <version>1.2.6</version>
+            <version>1.2.7</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>cc.funkemunky</groupId>
             <artifactId>SQLDatabase</artifactId>
-            <version>1.2.6</version>
+            <version>1.2.7</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

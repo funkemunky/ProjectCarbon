@@ -17,6 +17,7 @@ public abstract class Database {
     private DatabaseType type;
     private List<StructureSet> databaseValues;
     protected long lastLocalSave, lastGlobalSave;
+    public long lastLoad;
 
     public Database(String name, DatabaseType type) {
         this.name = name;
@@ -26,7 +27,9 @@ public abstract class Database {
         Carbon.INSTANCE.getDatabases().put(name, this);
     }
 
-    public abstract void loadDatabase();
+    public void loadDatabase() {
+        lastLoad = System.currentTimeMillis();
+    }
 
     public abstract void saveDatabase();
 

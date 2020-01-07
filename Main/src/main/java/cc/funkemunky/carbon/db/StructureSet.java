@@ -23,17 +23,18 @@ public class StructureSet {
 
     @Getter
     private Map<String, Pair<Long, Object>> objects = new HashMap<>();
+    public long lastUpdate, lastRemove;
 
     public void inputField(String key, Object object) {
-        inputField(key, System.currentTimeMillis(), object);
+        inputField(key, lastUpdate = System.currentTimeMillis(), object);
     }
 
     public void inputField(String key, long lastUpdate, Object object) {
-        objects.put(key, new Pair<>(lastUpdate, object));
+        objects.put(key, new Pair<>(this.lastUpdate = lastUpdate, object));
     }
 
     public void inputEncryptedField(String key, Object object, String password, HashType type) {
-        inputEncryptedField(key, System.currentTimeMillis(), object, password, type);
+        inputEncryptedField(key, lastUpdate = System.currentTimeMillis(), object, password, type);
     }
 
     public void inputEncryptedField(String key, long lastUpdate, Object object, String password, HashType type) {
@@ -45,7 +46,7 @@ public class StructureSet {
             String encryptedString = GeneralUtils.bytesToString(encryptedBytes);
 
             objects.put(key + ":@:" + type.name(),
-                    new Pair<>(lastUpdate, encryptedString + ":@@:" + hashed));
+                    new Pair<>(this.lastUpdate = lastUpdate, encryptedString + ":@@:" + hashed));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -143,6 +144,7 @@ public class StructureSet {
 
     public boolean removeField(String key) {
         if(objects.containsKey(key)) {
+            lastRemove = System.currentTimeMillis();
             objects.remove(key);
             return true;
         }

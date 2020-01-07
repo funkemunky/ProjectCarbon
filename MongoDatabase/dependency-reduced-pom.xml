@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>cc.funkemunky</groupId>
   <artifactId>MongoDatabase</artifactId>
-  <version>1.2.6</version>
+  <version>1.2.7</version>
   <build>
     <plugins>
       <plugin>
@@ -53,7 +53,7 @@
     <dependency>
       <groupId>cc.funkemunky</groupId>
       <artifactId>Main</artifactId>
-      <version>1.2.6</version>
+      <version>1.2.7</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>

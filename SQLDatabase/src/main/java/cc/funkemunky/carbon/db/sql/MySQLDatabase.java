@@ -43,6 +43,7 @@ public class MySQLDatabase extends Database {
 
     @Override
     public void loadDatabase() {
+        super.loadDatabase();
         try {
             connectIfDisconected();
             PreparedStatement statement = connection.prepareStatement("select * from " + getName());

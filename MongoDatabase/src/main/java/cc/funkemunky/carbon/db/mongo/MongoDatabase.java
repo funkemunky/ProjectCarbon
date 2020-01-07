@@ -35,12 +35,17 @@ public class MongoDatabase extends Database {
 
     @Override
     public void loadDatabase() {
+        super.loadDatabase();
         collection.find()
                 .forEach((Consumer<? super Document>) doc -> {
                     StructureSet set = new StructureSet(doc.getString("id"));
 
                     Set<String> keys = doc.keySet();
                     keys.remove("id");
+
+                    if(doc.containsKey("update")) {
+                        set.lastUpdate = doc.getLong("update");
+                    } else set.lastUpdate = lastLoad;
 
                     for (String key : keys) {
                         doc.get(key);
@@ -57,13 +62,14 @@ public class MongoDatabase extends Database {
 
     @Override
     public void saveDatabase() {
-        getDatabaseValues().parallelStream().forEach(structSet -> {
+        getDatabaseValues().parallelStream().filter(set -> set.lastRemove > lastLoad || set.lastUpdate > lastLoad).forEach(structSet -> {
             Document document = new Document("id", structSet.id);
 
             document.put("version", "2.0");
+            document.put("update", structSet.lastUpdate);
 
             structSet.getObjects().forEach((key, pair) -> {
-                document.put(key, structSet.getObjects().get(key));
+                document.put(key, structSet.getObjects().get(key).value);
                 document.put(key + "-update", pair.key);
             });
 

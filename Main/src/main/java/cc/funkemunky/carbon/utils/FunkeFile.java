@@ -2,10 +2,11 @@ package cc.funkemunky.carbon.utils;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class FunkeFile {
-    public List<String> lines = new ArrayList<>();
+    public List<String> lines = Collections.synchronizedList(new ArrayList<>());
     private File file;
     private String name;
 
