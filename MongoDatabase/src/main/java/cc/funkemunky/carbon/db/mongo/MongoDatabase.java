@@ -5,21 +5,25 @@ import cc.funkemunky.carbon.db.DatabaseType;
 import cc.funkemunky.carbon.db.StructureSet;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.result.DeleteResult;
 import lombok.val;
 import org.bson.Document;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 //Compatible with 1.2 and 1.2.1.
 public class MongoDatabase extends Database {
     private MongoCollection<Document> collection;
 
     public static Mongo mongo;
+    private List<StructureSet> removedSets = Collections.synchronizedList(new ArrayList<>());
 
     public MongoDatabase(String name) {
         super(name, DatabaseType.MONGO);
@@ -62,6 +66,11 @@ public class MongoDatabase extends Database {
 
     @Override
     public void saveDatabase() {
+        if(removedSets.size() > 0) {
+            removedSets.parallelStream()
+                    .forEach(set -> collection.deleteMany(Filters.eq("id", set.id)));
+            removedSets.clear();
+        }
         getDatabaseValues().parallelStream().filter(set -> set.lastRemove > lastLoad || set.lastUpdate > lastLoad).forEach(structSet -> {
             Document document = new Document("id", structSet.id);
 
@@ -134,5 +143,20 @@ public class MongoDatabase extends Database {
 
     public static Mongo initMongo(String database, String ip, int port) {
         return mongo = new Mongo(ip, port, database);
+    }
+
+    public synchronized boolean remove(String id) {
+        List<StructureSet> sets = getDatabaseValues().parallelStream()
+                .filter(set -> set.id.equals(id))
+                .collect(Collectors.toList());
+
+        if(sets.size() > 0) {
+            for (StructureSet set : sets) {
+                removedSets.add(set);
+                getDatabaseValues().remove(set);
+            }
+            return true;
+        }
+        return false;
     }
 }
