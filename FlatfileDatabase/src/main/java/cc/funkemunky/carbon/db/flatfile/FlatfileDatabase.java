@@ -99,7 +99,7 @@ public class FlatfileDatabase extends Database {
 
                     set.getObjects().forEach((key, object) -> {
                         try {
-                            String objectString = GeneralUtils.bytesToString(MiscUtils.getBytesOfObject(object));
+                            String objectString = GeneralUtils.bytesToString(MiscUtils.getBytesOfObject(object.value));
                             file.addLine(set.id + ":@@@:" + key + ":@@@:" + object.getClass().getName()
                                     + ":@@@:" + objectString + ":@@@:" + object.key);
                         } catch (IOException e) {
