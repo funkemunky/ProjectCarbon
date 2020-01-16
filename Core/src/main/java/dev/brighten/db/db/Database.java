@@ -20,7 +20,9 @@ public abstract class Database {
 
     public abstract List<StructureSet> get(Predicate<StructureSet> predicate);
 
-    public abstract boolean contains(String id);
+    public boolean contains(String id) {
+        return mappings.contains(id);
+    }
 
     public abstract int remove(String... id);
 

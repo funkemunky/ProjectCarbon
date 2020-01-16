@@ -65,11 +65,6 @@ public class MongoDatabase extends Database {
     }
 
     @Override
-    public boolean contains(String id) {
-        return getMappings().contains(id);
-    }
-
-    @Override
     public int remove(String... id) {
 
         long count = 0;

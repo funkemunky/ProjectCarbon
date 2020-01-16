@@ -12,6 +12,7 @@
     <modules>
         <module>Core</module>
         <module>Mongo</module>
+        <module>Flatfile</module>
     </modules>
 
     <build>
