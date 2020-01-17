@@ -38,12 +38,10 @@ public class Carbon {
     }
 
     public void addDatabase(Database database) {
-        database.connect();
         this.databases.add(database);
     }
 
     public void unregisterDatabase(Database database) {
-        database.disconnect();
         this.databases.remove(database);
     }
 

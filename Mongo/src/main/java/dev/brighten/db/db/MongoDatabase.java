@@ -16,7 +16,6 @@ import org.bson.Document;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -65,6 +64,12 @@ public class MongoDatabase extends Database {
     }
 
     @Override
+    public StructureSet create(String id) {
+        getMappings().add(id);
+        return new MongoSet(id);
+    }
+
+    @Override
     public int remove(String... id) {
 
         long count = 0;
@@ -96,6 +101,7 @@ public class MongoDatabase extends Database {
     Argument Options:
     One arg: Mongo URL string.
     Many args: IP, PORT, DATABASE, USERNAME, PASSWORD
+    Many Args no Auth: IP, PORT, DATABASE
      */
     @SneakyThrows
     @Override
@@ -123,7 +129,24 @@ public class MongoDatabase extends Database {
             this.database = client.getDatabase(args[2]);
             collection = database.getCollection(getName());
             connected = true;
-        } else throw new Exception("Argument length must either be 1 or five. Please reference documentation.");
+        } else if(args.length == 3) {
+            this.client = MongoClients.create(
+                    MongoClientSettings.builder()
+                            .applyToClusterSettings(builder ->
+                                    builder.hosts(
+                                            Collections
+                                                    .singletonList(
+                                                            new ServerAddress(args[0], Integer.parseInt(args[1])))))
+                            .build());
+            this.database = client.getDatabase(args[2]);
+            if(!database.listCollectionNames().into(new ArrayList<>()).contains(getName())) {
+                System.out.println("Creating collection " + getName() + "...");
+                database.createCollection(getName());
+            }
+            collection = database.getCollection(getName());
+            connected = true;
+        } else throw new Exception("Argument length must either be 1, 3, or 5. Please reference documentation." +
+                " (args=" + args.length + ")");
     }
 
     @Override

@@ -8,7 +8,7 @@
  */
 package dev.brighten.db.utils.reflection;
 
-import cc.funkemunky.carbon.utils.reflection.types.WrappedClass;
+import dev.brighten.db.utils.reflection.types.WrappedClass;
 
 public class Reflections {
     public static boolean classExists(String name) {

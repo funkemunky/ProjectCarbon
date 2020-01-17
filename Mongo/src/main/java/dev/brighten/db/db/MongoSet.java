@@ -2,7 +2,6 @@ package dev.brighten.db.db;
 
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.DeleteResult;
-import lombok.val;
 import org.bson.Document;
 
 import java.util.Set;
@@ -20,7 +19,7 @@ public class MongoSet extends StructureSet {
     public MongoSet(String name) {
         super(name);
 
-        document = new Document();
+        document = new Document("id", name);
     }
 
     @Override

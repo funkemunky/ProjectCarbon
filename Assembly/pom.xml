@@ -9,9 +9,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>Mongo</artifactId>
+    <artifactId>Assembly</artifactId>
 
     <build>
+        <defaultGoal>clean package</defaultGoal>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -37,20 +38,14 @@
                         </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <relocations>
-                        <relocation>
-                            <pattern>com.mongodb</pattern>
-                            <shadedPattern>dev.brighten.db.depends.com.mongodb</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>org.bson</pattern>
-                            <shadedPattern>dev.brighten.dev.depends.org.bson</shadedPattern>
-                        </relocation>
-                    </relocations>
-                </configuration>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
     </build>
 
     <dependencies>
@@ -58,12 +53,24 @@
             <groupId>dev.brighten.db</groupId>
             <artifactId>Core</artifactId>
             <version>${project.version}</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongo-java-driver</artifactId>
-            <version>3.11.0</version>
+            <groupId>dev.brighten.db</groupId>
+            <artifactId>Flatfile</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>dev.brighten.db</groupId>
+            <artifactId>Mongo</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>dev.brighten.db</groupId>
+            <artifactId>MySQL</artifactId>
+            <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

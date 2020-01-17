@@ -13,6 +13,9 @@
         <module>Core</module>
         <module>Mongo</module>
         <module>Flatfile</module>
+        <module>MySQL</module>
+        <module>Assembly</module>
+        <module>Example</module>
     </modules>
 
     <build>
@@ -27,32 +30,6 @@
                     <target>8</target>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <minimizeJar>false</minimizeJar>
-                            <relocations>
-                                <relocation>
-                                    <pattern>com.mongodb</pattern>
-                                    <shadedPattern>cc.funkemunky.carbon.depends.com.mongodb</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>org.bson</pattern>
-                                    <shadedPattern>cc.funkemunky.depends.org.bson</shadedPattern>
-                                </relocation>
-                            </relocations>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
         <resources>
             <resource>
@@ -61,6 +38,13 @@
             </resource>
         </resources>
     </build>
+
+    <repositories>
+        <repository>
+            <id>funkemunky-releases</id>
+            <url>http://nexus.funkemunky.cc/content/repositories/releases/</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>

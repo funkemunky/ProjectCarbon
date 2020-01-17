@@ -1,10 +1,15 @@
 package dev.brighten.db.db;
 
 import dev.brighten.db.utils.Pair;
+import dev.brighten.db.utils.json.JSONObject;
+import dev.brighten.db.utils.json.JsonReader;
 import lombok.Setter;
+import lombok.SneakyThrows;
 import lombok.val;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -53,7 +58,7 @@ public class FlatfileDatabase extends Database {
         return Arrays.stream(id).filter(fileMappings::containsKey)
                 .map(key -> fileMappings.get(key))
                 .map(FileSet::new)
-                .filter(set -> set.getId().equals(id))
+                .filter(set -> Arrays.asList(id).contains(set.getId()))
                 .collect(Collectors.toList());
     }
 
@@ -63,6 +68,20 @@ public class FlatfileDatabase extends Database {
                 .map(FileSet::new)
                 .filter(predicate)
                 .collect(Collectors.toList());
+    }
+
+    @SneakyThrows
+    @Override
+    public StructureSet create(String id) {
+        if(getMappings().contains(id)) return get(id).get(0);
+        File file = new File(directory.getPath() + File.separator + id + ".json");
+
+        System.out.println("File: " + file.getPath());
+        if(!file.exists()) {
+            if(!file.createNewFile()) return null;
+        }
+
+        return new FileSet(file);
     }
 
     @Override

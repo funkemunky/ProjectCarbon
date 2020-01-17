@@ -24,6 +24,8 @@ public abstract class Database {
         return mappings.contains(id);
     }
 
+    public abstract StructureSet create(String id);
+
     public abstract int remove(String... id);
 
     public abstract int remove(Predicate<StructureSet> predicate);

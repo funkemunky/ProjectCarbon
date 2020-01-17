@@ -2,6 +2,7 @@ package dev.brighten.db.db;
 
 import dev.brighten.db.utils.json.JSONException;
 import dev.brighten.db.utils.json.JSONObject;
+import dev.brighten.db.utils.json.JSONWriter;
 import dev.brighten.db.utils.json.JsonReader;
 import lombok.SneakyThrows;
 import lombok.val;
@@ -21,7 +22,14 @@ public class FileSet extends StructureSet {
         try {
             this.jobject = new JSONObject(JsonReader.readAll(new BufferedReader(new FileReader(file))));
         } catch (IOException | JSONException e) {
-            e.printStackTrace();
+            try {
+                val writer = new BufferedWriter(new FileWriter(file));
+
+                writer.write("{}");
+                writer.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 

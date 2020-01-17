@@ -1,10 +1,10 @@
 package dev.brighten.db.utils;
 
-import cc.funkemunky.carbon.utils.reflection.types.WrappedClass;
-import cc.funkemunky.carbon.utils.security.GeneralUtils;
-import cc.funkemunky.carbon.utils.security.hash.Hash;
-import cc.funkemunky.carbon.utils.security.hash.HashType;
-import cc.funkemunky.carbon.utils.security.hash.impl.SHA1;
+import dev.brighten.db.utils.reflection.types.WrappedClass;
+import dev.brighten.db.utils.security.GeneralUtils;
+import dev.brighten.db.utils.security.hash.Hash;
+import dev.brighten.db.utils.security.hash.HashType;
+import dev.brighten.db.utils.security.hash.impl.SHA1;
 
 import java.io.*;
 import java.util.concurrent.ThreadLocalRandom;
