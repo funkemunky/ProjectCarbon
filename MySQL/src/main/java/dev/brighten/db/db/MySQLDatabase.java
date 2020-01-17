@@ -105,10 +105,11 @@ public class MySQLDatabase extends Database {
         try {
             connection = DriverManager.getConnection("jdbc:mysql://" + args[0] + ":" + args[1] + "/" + args[2]
                     + "?autoReconnect=true&useSSL=" + args[3], args[4], args[5]);
-            Statement s = connection.createStatement(), s2 = connection.createStatement(), s3 = connection.createStatement();
-            int Result = s.executeUpdate("CREATE DATABASE IF NOT EXISTS " + args[2] + ";");
-            int Result3 = s3.executeUpdate("USE " + args[2] + ";");
-            int Result2 = s2.executeUpdate("CREATE TABLE IF NOT EXISTS " + getName()
+            Statement s = connection.createStatement(),
+                    s2 = connection.createStatement(), s3 = connection.createStatement();
+            int result = s.executeUpdate("CREATE DATABASE IF NOT EXISTS " + args[2] + ";");
+            int result1 = s3.executeUpdate("USE " + args[2] + ";");
+            int result2 = s2.executeUpdate("CREATE TABLE IF NOT EXISTS " + getName()
                     + " (id VARCHAR(64), name VARCHAR(64), value VARCHAR(512));");
 
             s.close();
