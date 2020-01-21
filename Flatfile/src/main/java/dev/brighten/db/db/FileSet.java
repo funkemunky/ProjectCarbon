@@ -2,7 +2,6 @@ package dev.brighten.db.db;
 
 import dev.brighten.db.utils.json.JSONException;
 import dev.brighten.db.utils.json.JSONObject;
-import dev.brighten.db.utils.json.JSONWriter;
 import dev.brighten.db.utils.json.JsonReader;
 import lombok.SneakyThrows;
 import lombok.val;
