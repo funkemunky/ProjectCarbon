@@ -20,16 +20,13 @@ public class FileSet extends StructureSet {
 
         this.file = file;
         try {
-            this.jobject = new JSONObject(JsonReader.readAll(new BufferedReader(new FileReader(file))));
-        } catch (IOException | JSONException e) {
-            try {
-                val writer = new BufferedWriter(new FileWriter(file));
-
-                writer.write("{}");
-                writer.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
+            if(file.exists()) {
+                this.jobject = new JSONObject(JsonReader.readAll(new BufferedReader(new FileReader(file))));
+            } else {
+                jobject = new JSONObject();
             }
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
         }
     }
 

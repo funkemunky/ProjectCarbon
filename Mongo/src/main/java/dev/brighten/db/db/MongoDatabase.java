@@ -100,6 +100,7 @@ public class MongoDatabase extends Database {
     /*
     Argument Options:
     One arg: Mongo URL string.
+    Many args: IP, PORT, DATABASE, USERNAME, PASSWORD, AUTHDB
     Many args: IP, PORT, DATABASE, USERNAME, PASSWORD
     Many Args no Auth: IP, PORT, DATABASE
      */
@@ -123,7 +124,7 @@ public class MongoDatabase extends Database {
                                             Collections
                                                     .singletonList(
                                                             new ServerAddress(args[0], Integer.parseInt(args[1])))))
-                            .credential(MongoCredential.createCredential(args[3], args[2], args[4].toCharArray()))
+                            .credential(MongoCredential.createCredential(args[3], args[(args.length == 6 ? 5 : 2)], args[4].toCharArray()))
                             .build());
 
             this.database = client.getDatabase(args[2]);

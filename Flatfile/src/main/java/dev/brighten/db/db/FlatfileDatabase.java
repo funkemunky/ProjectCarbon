@@ -1,15 +1,11 @@
 package dev.brighten.db.db;
 
 import dev.brighten.db.utils.Pair;
-import dev.brighten.db.utils.json.JSONObject;
-import dev.brighten.db.utils.json.JsonReader;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.val;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -24,25 +20,21 @@ public class FlatfileDatabase extends Database {
     private static File directory = new File(System.getProperty("user.home")
             + File.separator + "CarbonFFDBs");
 
+    private File dbDirectory;
+
     public FlatfileDatabase(String name) {
         super(name);
+        if(!directory.exists()) directory.mkdirs();
+        dbDirectory = new File(directory.getPath() + File.separator + name);
+
+        if(!dbDirectory.exists()) dbDirectory.mkdirs();
     }
 
     private Map<String, File> fileMappings = new HashMap<>();
 
     @Override
     public void loadMappings() {
-        directory = new File(directory.getPath() + File.separator + getName());
-
-        if(!directory.exists()) {
-            if(!directory.mkdirs()) return;
-        } else if(!directory.isDirectory()) {
-            if(directory.delete()) {
-                if(!directory.mkdirs()) return;
-            } else return;
-        }
-
-        val files = directory.listFiles(file -> file.getName().toLowerCase().endsWith(".json"));
+        val files = dbDirectory.listFiles(file -> file.getName().toLowerCase().endsWith(".json"));
 
         if(files == null) return;
 
@@ -74,7 +66,7 @@ public class FlatfileDatabase extends Database {
     @Override
     public StructureSet create(String id) {
         if(getMappings().contains(id)) return get(id).get(0);
-        File file = new File(directory.getPath() + File.separator + id + ".json");
+        File file = new File(dbDirectory.getPath() + File.separator + id + ".json");
 
         System.out.println("File: " + file.getPath());
         if(!file.exists()) {
