@@ -22,10 +22,23 @@ public class FileSet extends StructureSet {
             if(file.exists()) {
                 this.jobject = new JSONObject(JsonReader.readAll(new BufferedReader(new FileReader(file))));
             } else {
+                try {
+                    file.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 jobject = new JSONObject();
+                jobject.put("id", getId());
+                save(null);
             }
         } catch (IOException | JSONException e) {
-            e.printStackTrace();
+            jobject = new JSONObject();
+            try {
+                jobject.put("id", getId());
+                save(null);
+            } catch (JSONException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
