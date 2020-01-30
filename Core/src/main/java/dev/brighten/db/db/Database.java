@@ -3,7 +3,9 @@ package dev.brighten.db.db;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 @Getter
@@ -16,9 +18,13 @@ public abstract class Database {
 
     public abstract void loadMappings();
 
+    public abstract List<StructureSet> get(boolean parallel, String... id);
+
     public abstract List<StructureSet> get(String... id);
 
     public abstract List<StructureSet> get(Predicate<StructureSet> predicate);
+
+    public abstract List<StructureSet> get(boolean parallel, Predicate<StructureSet> predicate);
 
     public boolean contains(String id) {
         return mappings.contains(id);

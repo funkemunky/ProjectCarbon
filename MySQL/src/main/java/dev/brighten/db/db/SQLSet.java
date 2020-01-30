@@ -4,7 +4,9 @@ import dev.brighten.db.utils.MiscUtils;
 import dev.brighten.db.utils.security.GeneralUtils;
 import lombok.SneakyThrows;
 import lombok.val;
-import java.util.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class SQLSet extends StructureSet {
 

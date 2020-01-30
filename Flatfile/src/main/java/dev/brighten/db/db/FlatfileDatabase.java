@@ -46,8 +46,9 @@ public class FlatfileDatabase extends Database {
     }
 
     @Override
-    public List<StructureSet> get(String... id) {
-        return Arrays.stream(id).filter(fileMappings::containsKey)
+    public List<StructureSet> get(boolean parallel, String... id) {
+        return (parallel ? Arrays.stream(id).parallel() : Arrays.stream(id))
+                .filter(fileMappings::containsKey)
                 .map(key -> fileMappings.get(key))
                 .map(FileSet::new)
                 .filter(set -> Arrays.asList(id).contains(set.getId()))
@@ -55,11 +56,22 @@ public class FlatfileDatabase extends Database {
     }
 
     @Override
-    public List<StructureSet> get(Predicate<StructureSet> predicate) {
-        return fileMappings.values().stream()
+    public List<StructureSet> get(String... id) {
+        return get(false, id);
+    }
+
+    @Override
+    public List<StructureSet> get(boolean parallel, Predicate<StructureSet> predicate) {
+        return (parallel ? fileMappings.values().parallelStream() : fileMappings.values().stream())
                 .map(FileSet::new)
                 .filter(predicate)
                 .collect(Collectors.toList());
+    }
+
+
+    @Override
+    public List<StructureSet> get(Predicate<StructureSet> predicate) {
+        return get(false, predicate);
     }
 
     @SneakyThrows

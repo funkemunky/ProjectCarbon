@@ -1,6 +1,7 @@
 package dev.brighten.db.db;
 
 import lombok.val;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -40,18 +41,28 @@ public class MySQLDatabase extends Database {
     }
 
     @Override
-    public List<StructureSet> get(String... ids) {
-        return Arrays.stream(ids)
+    public List<StructureSet> get(boolean parallel, String... ids) {
+        return (parallel ? Arrays.stream(ids).parallel() : Arrays.stream(ids))
                 .filter(id -> getMappings().contains(id))
                 .map(id -> new SQLSet(this, id))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<StructureSet> get(Predicate<StructureSet> predicate) {
-        return getMappings().stream()
+    public List<StructureSet> get(String... ids) {
+        return get(false, ids);
+    }
+
+    @Override
+    public List<StructureSet> get(boolean parallel, Predicate<StructureSet> predicate) {
+        return (parallel ? getMappings().parallelStream() : getMappings().stream())
                 .map(string -> new SQLSet(this, string))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<StructureSet> get(Predicate<StructureSet> predicate) {
+        return get(false, predicate);
     }
 
     @Override

@@ -10,12 +10,9 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import lombok.SneakyThrows;
 import lombok.val;
-import lombok.var;
 import org.bson.Document;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -40,27 +37,43 @@ public class MongoDatabase extends Database {
     }
 
     @Override
+    public List<StructureSet> get(boolean parallel, String... id) {
+        //Synchronization is for parallel. Shouldn't affect performance for access with sequential streams.
+        val docList = Collections.synchronizedList(getDocsToArray());
+
+        Set<String> ids = Collections.synchronizedSet(Arrays.stream(id).collect(Collectors.toSet()));
+
+        val toReturn = (parallel ? docList.parallelStream(): docList.stream())
+                .filter(doc -> ids.contains(doc.getString("id")))
+                .map(doc -> (StructureSet) new MongoSet(doc)) //Casting since the abstract method is StructureSet.
+                .collect(Collectors.toList());
+
+        //It's good practice to clean up after yourself instead of waiting for the JVM to garbage collect.
+        ids.clear();
+        docList.clear();
+
+        return toReturn;
+    }
+
+    @Override
     public List<StructureSet> get(String... ids) {
-        List<StructureSet> sets = new ArrayList<>();
+        return get(false, ids);
+    }
 
-        for (String id : ids) {
-            collection.find(Filters.eq("id", id))
-                    .forEach((Consumer<? super Document>) doc -> {
-                        sets.add(new MongoSet(doc));
-                    });
-        }
-
-        return sets;
+    @Override
+    public List<StructureSet> get(boolean parallel, Predicate<StructureSet> predicate) {
+        return (parallel
+                //Sync may be unnecessary but should help with preventing corruption/errors.
+                ? Collections.synchronizedList(getDocsToArray()).parallelStream()
+                : getDocsToArray().stream())
+                .map(MongoSet::new)
+                .filter(predicate)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<StructureSet> get(Predicate<StructureSet> predicate) {
-        return collection.find(Filters.exists("id"))
-                .into(new ArrayList<>())
-                .stream()
-                .map(MongoSet::new)
-                .filter(predicate)
-                .collect(Collectors.toList());
+        return get(false, predicate);
     }
 
     @Override
@@ -156,5 +169,11 @@ public class MongoDatabase extends Database {
         collection = null;
         client.close();
         connected = false;
+    }
+
+    private List<Document> getDocsToArray() {
+        if(!connected) return new ArrayList<>();
+        return collection.find(Filters.exists("id"))
+                .into(new ArrayList<>());
     }
 }
