@@ -137,7 +137,8 @@ public class MongoDatabase extends Database {
                                             Collections
                                                     .singletonList(
                                                             new ServerAddress(args[0], Integer.parseInt(args[1])))))
-                            .credential(MongoCredential.createCredential(args[3], args[(args.length == 6 ? 5 : 2)], args[4].toCharArray()))
+                            .credential(MongoCredential.createCredential(args[3],
+                                    args[(args.length == 6 ? 5 : 2)], args[4].toCharArray()))
                             .build());
 
             this.database = client.getDatabase(args[2]);
@@ -172,8 +173,9 @@ public class MongoDatabase extends Database {
     }
 
     private List<Document> getDocsToArray() {
-        if(!connected) return new ArrayList<>();
-        return collection.find(Filters.exists("id"))
-                .into(new ArrayList<>());
+        List<Document> docs =  new ArrayList<>();
+        if(connected)
+            collection.find(Filters.exists("id")).forEach((Consumer<? super Document>) docs::add);
+        return docs;
     }
 }
