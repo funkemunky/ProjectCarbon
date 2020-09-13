@@ -6,10 +6,10 @@ import lombok.SneakyThrows;
 import lombok.val;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -21,6 +21,11 @@ public class FlatfileDatabase extends Database {
             + File.separator + "CarbonFFDBs");
 
     private File dbDirectory;
+    private Map<String, File> fileMappings = new HashMap<>();
+    private SortedMap<String, FileSet> cachedSets = new ConcurrentSkipListMap<>(Comparator
+            .comparing(k -> System.currentTimeMillis() - fileMappings.get(k).lastModified()));
+    @Setter
+    private int cacheSizeLimit = 50000;
 
     public FlatfileDatabase(String name) {
         super(name);
@@ -29,8 +34,6 @@ public class FlatfileDatabase extends Database {
 
         if(!dbDirectory.exists()) dbDirectory.mkdirs();
     }
-
-    private Map<String, File> fileMappings = new HashMap<>();
 
     @Override
     public void loadMappings() {
@@ -42,11 +45,33 @@ public class FlatfileDatabase extends Database {
             String id = file.getName().replace(".json", "");
             getMappings().add(id);
             fileMappings.put(id, file);
+
+            if(System.currentTimeMillis() - file.lastModified() < TimeUnit.DAYS.toMillis(2)) {
+                if(cachedSets.size() >= cacheSizeLimit) {
+                    cachedSets.remove(cachedSets.lastKey());
+                    cachedSets.put(file.getName().replace(".json", ""), new FileSet(file));
+                }
+                cachedSets.put(id, new FileSet(file));
+            }
+        }
+
+        if(cachedSets.size() > cacheSizeLimit) {
+            System.out.println("The amount of objects has reached the cache limit of " + cacheSizeLimit + ". " +
+                    "It is recommended you increase this limit since everything will now " +
+                    "be grabbed from storage instead of RAM.");
         }
     }
 
     @Override
     public List<StructureSet> get(boolean parallel, String... id) {
+        if(cachedSets.size() < cacheSizeLimit) {
+            return (parallel ? Arrays.stream(id).parallel() : Arrays.stream(id))
+                    .filter(cachedSets::containsKey)
+                    .map(key -> cachedSets.get(key))
+                    .filter(set -> Arrays.asList(id).contains(set.getId()))
+                    .collect(Collectors.toList());
+        }
+
         return (parallel ? Arrays.stream(id).parallel() : Arrays.stream(id))
                 .filter(fileMappings::containsKey)
                 .map(key -> fileMappings.get(key))
@@ -62,6 +87,11 @@ public class FlatfileDatabase extends Database {
 
     @Override
     public List<StructureSet> get(boolean parallel, Predicate<StructureSet> predicate) {
+        if(cachedSets.size() < cacheSizeLimit) {
+            return (parallel ? cachedSets.values().parallelStream() : cachedSets.values().stream())
+                    .filter(predicate)
+                    .collect(Collectors.toList());
+        }
         return (parallel ? fileMappings.values().parallelStream() : fileMappings.values().stream())
                 .map(FileSet::new)
                 .filter(predicate)
@@ -81,6 +111,10 @@ public class FlatfileDatabase extends Database {
         File file = new File(dbDirectory.getPath() + File.separator + id + ".json");
 
         fileMappings.put(file.getName().replace(".json", ""), file);
+        if(cachedSets.size() >= cacheSizeLimit) {
+            cachedSets.remove(cachedSets.lastKey());
+            cachedSets.put(file.getName().replace(".json", ""), new FileSet(file));
+        }
         return new FileSet(file);
     }
 
@@ -94,6 +128,7 @@ public class FlatfileDatabase extends Database {
                     File file = pair.value;
 
                     fileMappings.remove(key);
+                    cachedSets.remove(key);
                     getMappings().remove(key);
 
                     if(file.delete()) count.incrementAndGet();
@@ -111,6 +146,7 @@ public class FlatfileDatabase extends Database {
                     File file = pair.value;
 
                     fileMappings.remove(key);
+                    cachedSets.remove(key);
                     getMappings().remove(key);
 
                     if(file.delete()) count.incrementAndGet();
@@ -127,5 +163,6 @@ public class FlatfileDatabase extends Database {
     public void disconnect() {
         getMappings().clear();
         fileMappings.clear();
+        cachedSets.clear();
     }
 }
