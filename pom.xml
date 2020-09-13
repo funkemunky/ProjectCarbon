@@ -7,7 +7,7 @@
     <groupId>dev.brighten.db</groupId>
     <artifactId>Carbon</artifactId>
     <packaging>pom</packaging>
-    <version>2.0.1</version>
+    <version>2.0.2</version>
 
     <modules>
         <module>Core</module>

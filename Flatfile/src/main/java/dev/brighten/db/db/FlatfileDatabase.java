@@ -80,6 +80,7 @@ public class FlatfileDatabase extends Database {
         if(getMappings().contains(id)) return get(id).get(0);
         File file = new File(dbDirectory.getPath() + File.separator + id + ".json");
 
+        fileMappings.put(file.getName().replace(".json", ""), file);
         return new FileSet(file);
     }
 
